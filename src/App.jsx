@@ -26,6 +26,7 @@ function loadContent(language) {
   const expertise = readMarkdown(language, 'expertise')
   const experience = readMarkdown(language, 'experience')
   const credentials = readMarkdown(language, 'credentials')
+  const community = readMarkdown(language, 'community').meta
   const contact = readMarkdown(language, 'contact').meta
   const clean = (value) => value.replaceAll('**', '')
   const impactItems = sections(impact.body).map(({ title, lines }) => [title, lines])
@@ -54,6 +55,12 @@ function loadContent(language) {
     recognition: credentials.meta.recognitionLabel, recognitionText: recognition.lines.replace(/^- /, ''),
     closingEyebrow: contact.eyebrow, closingTitle: contact.title, closingText: contact.text,
     email: contact.emailLabel, emailAddress: contact.email, linkedin: contact.linkedinLabel, footer: contact.footer,
+    communityEyebrow: community.eyebrow, communityTitle: community.title, communityIntro: community.intro,
+    articleTitle: community.articleTitle, articleDate: community.articleDate, articleSource: community.articleSource,
+    articleDescription: community.articleDescription, articleUrl: community.articleUrl,
+    videosTitle: community.videosTitle, videoOneTitle: community.videoOneTitle, videoOneId: community.videoOneId,
+    videoOneDuration: community.videoOneDuration, videoTwoTitle: community.videoTwoTitle, videoTwoId: community.videoTwoId,
+    videoTwoDuration: community.videoTwoDuration, videoLinkLabel: community.videoLinkLabel, articleLinkLabel: community.articleLinkLabel,
   }
 }
 
@@ -131,7 +138,7 @@ async function downloadCv(language, data) {
 
 const copy = {
   en: {
-    nav: ['About', 'Expertise', 'Experience', 'Credentials', 'Contact'],
+    nav: ['About', 'Expertise', 'Community', 'Experience', 'Credentials', 'Contact'],
     available: 'TECHNOLOGY EXECUTIVE · 20+ YEARS OF EXPERIENCE',
     role: 'ACCOUNTS CTO · FINOPS · CLOUD & ENTERPRISE ARCHITECTURE',
     heroLead: 'Technology at the crossroads of',
@@ -196,7 +203,7 @@ const copy = {
     pdfLang: 'EN',
   },
   fr: {
-    nav: ['Profil', 'Expertise', 'Expérience', 'Certifications', 'Contact'],
+    nav: ['Profil', 'Expertise', 'Communauté', 'Expérience', 'Certifications', 'Contact'],
     available: 'DIRIGEANT TECHNOLOGIQUE · PLUS DE 20 ANS D’EXPÉRIENCE',
     role: 'CTO DE COMPTES · FINOPS · CLOUD ET ARCHITECTURE D’ENTREPRISE',
     heroLead: 'La technologie au croisement de',
@@ -302,7 +309,7 @@ export default function App() {
       <header className="topbar">
         <a className="wordmark" href="#top" aria-label="Alaeddine Najjar, home">AN<span>.</span></a>
         <nav className="nav-links" aria-label={language === 'fr' ? 'Navigation principale' : 'Main navigation'}>
-          {t.nav.map((label, index) => <a key={label} href={['#about', '#expertise', '#experience', '#credentials', '#contact'][index]}>{label}</a>)}
+          {t.nav.map((label, index) => <a key={label} href={['#about', '#expertise', '#community', '#experience', '#credentials', '#contact'][index]}>{label}</a>)}
         </nav>
         <div className="top-actions">
           <button className="language-switch" onClick={() => setLanguage(language === 'en' ? 'fr' : 'en')} aria-label={language === 'en' ? 'Passer en français' : 'Switch to English'}>
@@ -340,6 +347,18 @@ export default function App() {
       <section className="expertise-section section-wrap" id="expertise">
         <div className="section-heading"><p className="eyebrow">{t.expertiseEyebrow}</p><h2>{t.expertiseTitle}</h2><p className="section-intro">{t.expertiseIntro}</p></div>
         <div className="expertise-list">{t.expertise.map(([number, title, text]) => <article className="expertise-row" key={number}><span className="row-number">{number}</span><h3>{title}</h3><p>{text}</p><span className="row-arrow">↗</span></article>)}</div>
+      </section>
+
+      <section className="community-section section-wrap" id="community">
+        <div className="section-heading"><p className="eyebrow">{t.communityEyebrow}</p><h2>{t.communityTitle}</h2><p className="section-intro">{t.communityIntro}</p></div>
+        <a className="community-article" href={t.articleUrl} target="_blank" rel="noreferrer">
+          <div><span className="community-source">{t.articleSource} · {t.articleDate}</span><h3>{t.articleTitle}</h3><p>{t.articleDescription}</p><span className="community-link">{t.articleLinkLabel} ↗</span></div>
+        </a>
+        <h3 className="community-videos-title">{t.videosTitle}</h3>
+        <div className="community-video-grid">{[
+          { title: t.videoOneTitle, id: t.videoOneId, duration: t.videoOneDuration },
+          { title: t.videoTwoTitle, id: t.videoTwoId, duration: t.videoTwoDuration },
+        ].map((video) => <article className="community-video" key={video.id}><div className="video-frame"><iframe src={`https://www.youtube-nocookie.com/embed/${video.id}`} title={video.title} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen /></div><div className="video-caption"><h4>{video.title}</h4><span>{video.duration}</span><a href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noreferrer">{t.videoLinkLabel} ↗</a></div></article>)}</div>
       </section>
 
       <section className="experience-section" id="experience">

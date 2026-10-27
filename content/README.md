@@ -1,6 +1,6 @@
 # Modifier le portfolio
 
-Les contenus visibles sont dans `content/fr/` et `content/en/`. Chaque dossier contient les mêmes six fichiers : `profile.md`, `impact.md`, `expertise.md`, `experience.md`, `credentials.md` et `contact.md`.
+Les contenus visibles sont dans `content/fr/` et `content/en/`. Chaque dossier contient les mêmes sept fichiers : `profile.md`, `impact.md`, `expertise.md`, `community.md`, `experience.md`, `credentials.md` et `contact.md`.
 
 1. Ouvrir le fichier de la langue à modifier dans VS Code.
 2. Modifier les valeurs de l’en-tête entre les deux lignes `---`, ou le texte sous les titres `##`.
@@ -8,6 +8,8 @@ Les contenus visibles sont dans `content/fr/` et `content/en/`. Chaque dossier c
 4. Pour mettre à jour le site public, reconstruire puis pousser les changements sur GitHub.
 
 Pour une expérience professionnelle, garder la structure d’un bloc : titre d’entreprise `##`, période sur la ligne suivante, poste(s) en gras sur la ligne d’après, puis description. Les mêmes fichiers alimentent le CV PDF généré dans le navigateur au clic sur « Télécharger le CV ».
+
+Dans `community.md`, modifier les valeurs de l’en-tête pour changer le texte, le lien de l’article Fujitsu ou les titres, identifiants et durées des vidéos YouTube intégrées.
 
 ## Assistant recruteur
 

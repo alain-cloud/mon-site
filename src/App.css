@@ -69,6 +69,23 @@ button { font: inherit; }
 .expertise-row h3 { font-size: 12px; line-height: 1.5; margin: 0; font-weight: 700; }
 .expertise-row p { font-size: 10px; line-height: 1.7; color: #6b7c92; margin: 0; }
 .row-arrow { color: #508ac9; font-size: 15px; }
+.community-section { padding-block: 100px 108px; }
+.community-section > .section-heading { max-width: 600px; margin-bottom: 32px; }
+.community-article { display: block; padding: 27px 30px; border: 1px solid #d8e2ed; border-left: 3px solid #3479bd; background: #fff; color: inherit; text-decoration: none; transition: border-color .2s, transform .2s, box-shadow .2s; }
+.community-article:hover { border-color: #8eb8e4; box-shadow: 0 10px 28px #183c6012; transform: translateY(-2px); }
+.community-source { color: #5481ad; font-size: 9px; font-weight: 700; letter-spacing: 1.1px; text-transform: uppercase; }
+.community-article h3 { max-width: 700px; margin: 12px 0 8px; color: #17263b; font: 600 22px/1.3 'Manrope', sans-serif; letter-spacing: -.5px; }
+.community-article p { max-width: 760px; margin: 0 0 15px; color: #687b91; font-size: 11px; line-height: 1.75; }
+.community-link { color: #276caf; font-size: 10px; font-weight: 700; }
+.community-videos-title { margin: 39px 0 18px; color: #17263b; font: 600 18px 'Manrope', sans-serif; }
+.community-video-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.community-video { min-width: 0; border: 1px solid #d8e2ed; background: #fff; }
+.video-frame { aspect-ratio: 16 / 9; background: #162840; }
+.video-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+.video-caption { display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 8px 12px; padding: 16px; }
+.video-caption h4 { margin: 0; color: #263b54; font-size: 12px; line-height: 1.55; }
+.video-caption > span { color: #718198; font-size: 9px; white-space: nowrap; }
+.video-caption a { grid-column: 1 / -1; justify-self: start; color: #276caf; font-size: 10px; font-weight: 700; text-decoration: none; }
 .experience-section { background: #e9f0f8; }
 .experience-inner { display: grid; grid-template-columns: .7fr 1.3fr; gap: 60px; padding-block: 100px 105px; }
 .timeline { border-top: 1px solid #cfdae5; }
@@ -121,6 +138,7 @@ button { font: inherit; }
   .impact-section, .expertise-section, .experience-inner { grid-template-columns: 1fr; gap: 35px; }
   .impact-heading h2 { max-width: 480px; }
   .expertise-section, .experience-inner { padding-block: 75px; }
+  .community-section { padding-block: 75px; }
   .credentials-section { padding-block: 75px; }
 }
 @media (max-width: 520px) {
@@ -142,6 +160,9 @@ button { font: inherit; }
   .impact-item p { font-size: 9px; }
   .expertise-row { grid-template-columns: 24px 1fr 14px; gap: 12px; }
   .expertise-row p { grid-column: 2 / 3; }
+  .community-video-grid { grid-template-columns: 1fr; }
+  .community-article { padding: 22px 19px; }
+  .community-article h3 { font-size: 18px; }
   .row-arrow { grid-column: 3; grid-row: 1; }
   .job { grid-template-columns: 1fr; gap: 9px; }
   .job-content { padding-left: 16px; }
