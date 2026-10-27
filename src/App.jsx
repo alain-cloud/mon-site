@@ -420,7 +420,7 @@ export default function App() {
   useEffect(() => {
     document.documentElement.lang = language
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr'
-    document.title = ({ fr: 'Alaeddine Najjar — CTO de comptes et dirigeant technologique', es: 'Alaeddine Najjar — CTO de cuentas y líder tecnológico', ar: 'Alaeddine Najjar — مدير تقني وقيادي تكنولوجي' })[language] || 'Alaeddine Najjar — Accounts CTO & Technology Executive'
+    document.title = ({ fr: 'Alaeddine Najjar — CTO de comptes et dirigeant technologique', es: 'Alaeddine Najjar — CTO de cuentas y líder tecnológico', ar: 'علاء الدين النًجار — مدير تقني وقيادي تكنولوجي' })[language] || 'Alaeddine Najjar — Accounts CTO & Technology Executive'
   }, [language])
 
   return (
@@ -440,7 +440,7 @@ export default function App() {
 
       <section className="hero section-wrap" id="about">
         <div className="hero-copy">
-          <h1 className="hero-name">Alaeddine <span>NAJJAR</span></h1>
+          <h1 className="hero-name">{language === 'ar' ? <>علاء الدين <span>النًجار</span></> : <>Alaeddine <span>NAJJAR</span></>}</h1>
           <div className="availability">{t.available}</div>
           <p className="role-label">{t.role}</p>
           <h2>{t.heroLead} <em>{t.heroAccent}</em></h2>
