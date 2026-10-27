@@ -1,6 +1,132 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 
+const mdFiles = import.meta.glob('../content/**/*.md', { query: '?raw', import: 'default', eager: true })
+
+function readMarkdown(language, name) {
+  const source = mdFiles[`../content/${language}/${name}.md`]
+  const [, frontmatter = '', body = ''] = source.match(/^---\s*\n([\s\S]*?)\n---\s*\n?([\s\S]*)$/) || []
+  const meta = Object.fromEntries(frontmatter.split('\n').filter(Boolean).map((line) => {
+    const split = line.indexOf(':')
+    return [line.slice(0, split), line.slice(split + 1).trim()]
+  }))
+  return { meta, body }
+}
+
+function sections(body) {
+  return body.split(/^##\s+/m).slice(1).map((section) => {
+    const [title, ...lines] = section.split('\n')
+    return { title: title.trim(), lines: lines.join('\n').trim() }
+  })
+}
+
+function loadContent(language) {
+  const profile = readMarkdown(language, 'profile').meta
+  const impact = readMarkdown(language, 'impact')
+  const expertise = readMarkdown(language, 'expertise')
+  const experience = readMarkdown(language, 'experience')
+  const credentials = readMarkdown(language, 'credentials')
+  const contact = readMarkdown(language, 'contact').meta
+  const clean = (value) => value.replaceAll('**', '')
+  const impactItems = sections(impact.body).map(({ title, lines }) => [title, lines])
+  const expertiseItems = sections(expertise.body).map(({ title, lines }, index) => [String(index + 1).padStart(2, '0'), title, lines])
+  const jobs = sections(experience.body).map(({ title: company, lines }) => {
+    const [date = '', roles = '', ...description] = lines.split('\n').filter(Boolean)
+    return { company, date, title: clean(roles), text: description.join(' ') }
+  })
+  const credentialSections = sections(credentials.body)
+  const getCredential = (name) => credentialSections.find((section) => section.title === name)
+  const certs = getCredential('Certifications').lines.split('\n').filter(Boolean).map((line) => line.replace(/^- /, ''))
+  const education = getCredential(language === 'fr' ? 'Formation' : 'Education')
+  const languages = getCredential(language === 'fr' ? 'Langues' : 'Languages')
+  const recognition = getCredential(language === 'fr' ? 'Distinction' : 'Recognition')
+  return {
+    ...profile, available: profile.badge, heroLead: profile.lead, heroAccent: profile.accent,
+    impactLabel: impact.meta.eyebrow, impactTitle: impact.meta.title, impacts: impactItems,
+    expertiseEyebrow: expertise.meta.eyebrow, expertiseTitle: expertise.meta.title,
+    expertiseIntro: expertise.meta.intro, expertise: expertiseItems,
+    experienceEyebrow: experience.meta.eyebrow, experienceTitle: experience.meta.title,
+    experienceIntro: experience.meta.intro, jobs,
+    credentialsEyebrow: credentials.meta.eyebrow, credentialsTitle: credentials.meta.title,
+    certs, education: credentials.meta.educationLabel, educationText: education.lines.split('\n').map((line) => line.replace(/^- /, '')).join('\n'),
+    languages: credentials.meta.languagesLabel, languageText: languages.lines.split('\n').map((line) => line.replace(/^- /, '')).join('\n'),
+    recognition: credentials.meta.recognitionLabel, recognitionText: recognition.lines.replace(/^- /, ''),
+    closingEyebrow: contact.eyebrow, closingTitle: contact.title, closingText: contact.text,
+    email: contact.emailLabel, emailAddress: contact.email, linkedin: contact.linkedinLabel, footer: contact.footer,
+  }
+}
+
+const content = { en: loadContent('en'), fr: loadContent('fr') }
+
+async function downloadCv(language, data) {
+  const { PDFDocument, StandardFonts, rgb } = window.PDFLib || {}
+  if (!PDFDocument) throw new Error('PDF generator is unavailable')
+  const pdf = await PDFDocument.create()
+  const regular = await pdf.embedFont(StandardFonts.Helvetica)
+  const bold = await pdf.embedFont(StandardFonts.HelveticaBold)
+  const navy = rgb(0.035, 0.12, 0.27)
+  const blue = rgb(0.08, 0.35, 0.70)
+  const ink = rgb(0.12, 0.17, 0.24)
+  const muted = rgb(0.38, 0.43, 0.49)
+  const W = 595.28; const H = 841.89; const margin = 48
+  let page; let y
+  const addPage = (first = false) => {
+    page = pdf.addPage([W, H]); y = H - margin
+    if (first) {
+      page.drawRectangle({ x: 0, y: H - 155, width: W, height: 155, color: navy })
+      page.drawText('ALAEDDINE NAJJAR', { x: margin, y: H - 57, size: 25, font: bold, color: rgb(1, 1, 1) })
+      page.drawText(data.role, { x: margin, y: H - 84, size: 10, font: regular, color: rgb(0.78, 0.87, 0.98), maxWidth: W - margin * 2 })
+      page.drawText(`${data.emailAddress}  ·  ${data.location}  ·  LinkedIn: linkedin.com/in/alaeddinenajjar`, { x: margin, y: H - 111, size: 8, font: regular, color: rgb(1, 1, 1), maxWidth: W - margin * 2 })
+      y = H - 180
+    } else y = H - margin
+  }
+  const normalize = (value) => String(value).replace(/[–—]/g, '-').replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/€/g, 'EUR').replace(/·/g, ' | ').replace(/%/g, '%')
+  const linesFor = (value, font, size, maxWidth) => {
+    const words = normalize(value).split(/\s+/); const lines = []; let line = ''
+    for (const word of words) {
+      const next = line ? `${line} ${word}` : word
+      if (line && font.widthOfTextAtSize(next, size) > maxWidth) { lines.push(line); line = word } else line = next
+    }
+    if (line) lines.push(line)
+    return lines
+  }
+  const text = (value, size = 9, font = regular, color = ink, indent = 0) => {
+    const maxWidth = W - margin * 2 - indent
+    const lines = linesFor(value, font, size, maxWidth)
+    if (y - lines.length * (size + 3) < 45) addPage()
+    for (const line of lines) { page.drawText(line, { x: margin + indent, y, size, font, color }); y -= size + 3 }
+    y -= 3
+  }
+  const heading = (label) => {
+    if (y < 80) addPage()
+    y -= 6; page.drawText(normalize(label).toUpperCase(), { x: margin, y, size: 10, font: bold, color: blue }); y -= 17
+  }
+  addPage(true)
+  text(data.intro, 9, regular, ink)
+  heading(language === 'fr' ? 'Résultats mesurables' : 'Selected impact')
+  for (const [metric, description] of data.impacts) text(`${metric}  ${description}`, 9, regular, ink, 8)
+  heading(language === 'fr' ? 'Expertise' : 'Expertise')
+  for (const [, title, description] of data.expertise) text(`${title}: ${description}`, 9, regular, ink, 8)
+  heading(language === 'fr' ? 'Expérience professionnelle' : 'Professional experience')
+  for (const job of data.jobs) {
+    text(`${job.company}  |  ${job.date}`, 10, bold, navy)
+    text(job.title, 9, bold, ink, 8)
+    text(job.text, 8.5, regular, muted, 8)
+  }
+  heading(data.education)
+  for (const item of data.educationText.split('\n')) text(item, 8.5, regular, ink, 8)
+  heading(language === 'fr' ? 'Certifications' : 'Certifications')
+  for (const cert of data.certs) text(cert, 8.5, regular, ink, 8)
+  heading(data.languages)
+  for (const item of data.languageText.split('\n')) text(item, 8.5, regular, ink, 8)
+  heading(data.recognition)
+  text(data.recognitionText, 8.5, regular, ink)
+  const bytes = await pdf.save()
+  const url = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }))
+  const link = document.createElement('a'); link.href = url; link.download = `Alaeddine-Najjar-CV-${language.toUpperCase()}.pdf`; link.click()
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
 const copy = {
   en: {
     nav: ['About', 'Expertise', 'Experience', 'Credentials', 'Contact'],
@@ -136,8 +262,31 @@ const copy = {
 
 export default function App() {
   const [language, setLanguage] = useState('en')
-  const t = copy[language]
-  const cvHref = `${import.meta.env.BASE_URL}cv/Alaeddine-Najjar-CV-${t.pdfLang}.pdf`
+  const [assistantOpen, setAssistantOpen] = useState(false)
+  const [question, setQuestion] = useState('')
+  const [assistantAnswer, setAssistantAnswer] = useState('')
+  const [assistantBusy, setAssistantBusy] = useState(false)
+  const t = { ...copy[language], ...content[language] }
+  const makeCv = () => downloadCv(language, t).catch((error) => console.error('Unable to generate CV', error))
+  const askAssistant = async (event) => {
+    event.preventDefault()
+    const endpoint = import.meta.env.VITE_RECRUITER_ASSISTANT_ENDPOINT
+    if (!endpoint) {
+      setAssistantAnswer(language === 'fr'
+        ? 'L’assistant est prêt côté interface. Il doit être relié à un service sécurisé avant de pouvoir répondre.'
+        : 'The assistant interface is ready. It needs a secure service connection before it can answer questions.')
+      return
+    }
+    setAssistantBusy(true); setAssistantAnswer('')
+    try {
+      const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ language, question, profile: t }) })
+      if (!response.ok) throw new Error('Assistant request failed')
+      const result = await response.json()
+      setAssistantAnswer(result.answer || '')
+    } catch {
+      setAssistantAnswer(language === 'fr' ? 'Je ne peux pas répondre pour le moment. Réessayez un peu plus tard.' : 'I cannot answer right now. Please try again shortly.')
+    } finally { setAssistantBusy(false) }
+  }
 
   useEffect(() => {
     document.documentElement.lang = language
@@ -157,7 +306,7 @@ export default function App() {
           <button className="language-switch" onClick={() => setLanguage(language === 'en' ? 'fr' : 'en')} aria-label={language === 'en' ? 'Passer en français' : 'Switch to English'}>
             <span className={language === 'fr' ? 'active' : ''}>FR</span><i>/</i><span className={language === 'en' ? 'active' : ''}>EN</span>
           </button>
-          <a className="header-download" href={cvHref} download>{t.cv} <span>↗</span></a>
+          <button className="header-download" onClick={makeCv}>{t.cv} <span>↗</span></button>
         </div>
       </header>
 
@@ -169,7 +318,7 @@ export default function App() {
           <p className="hero-intro">{t.intro}</p>
           <div className="hero-actions">
             <a className="button button-dark" href="#experience">{t.cta}<span>↗</span></a>
-            <a className="text-link" href={cvHref} download>{t.cv}<span>↓</span></a>
+            <button className="text-link" onClick={makeCv}>{t.cv}<span>↓</span></button>
           </div>
           <p className="location"><span>⌖</span>{t.based}</p>
         </div>
@@ -203,8 +352,12 @@ export default function App() {
         <div className="credentials-grid"><div className="cert-list">{t.certs.map((cert) => <div className="cert-item" key={cert}><span>✳</span>{cert}</div>)}</div><div className="detail-cards"><article><p className="eyebrow">{t.education}</p><p className="detail-copy">{t.educationText.split('\n').map((line) => <span key={line}>{line}</span>)}</p></article><article><p className="eyebrow">{t.languages}</p><p className="detail-copy">{t.languageText.split('\n').map((line) => <span key={line}>{line}</span>)}</p></article><article><p className="eyebrow">{t.recognition}</p><p className="detail-copy">{t.recognitionText}</p></article></div></div>
       </section>
 
-      <section className="closing-section section-wrap" id="contact"><p className="eyebrow">{t.closingEyebrow}</p><h2>{t.closingTitle}</h2><p>{t.closingText}</p><div className="closing-actions"><a className="button button-light" href={cvHref} download>{t.cv}<span>↓</span></a><a className="closing-link" href={`mailto:${t.emailAddress}`}>{t.email}<span>↗</span></a><a className="closing-link" href="https://www.linkedin.com/in/alaeddinenajjar/" target="_blank" rel="noreferrer">{t.linkedin}<span>↗</span></a></div><div className="closing-decoration">✳</div></section>
+      <section className="closing-section section-wrap" id="contact"><p className="eyebrow">{t.closingEyebrow}</p><h2>{t.closingTitle}</h2><p>{t.closingText}</p><div className="closing-actions"><button className="button button-light" onClick={makeCv}>{t.cv}<span>↓</span></button><a className="closing-link" href={`mailto:${t.emailAddress}`}>{t.email}<span>↗</span></a><a className="closing-link" href="https://www.linkedin.com/in/alaeddinenajjar/" target="_blank" rel="noreferrer">{t.linkedin}<span>↗</span></a></div><div className="closing-decoration">✳</div></section>
       <footer className="footer section-wrap"><span>{t.footer}</span><a href="#top">{t.backTop}</a></footer>
+      <aside className="recruiter-assistant">
+        {assistantOpen && <div className="assistant-panel"><div className="assistant-heading"><strong>{language === 'fr' ? 'Assistant recruteur' : 'Recruiter assistant'}</strong><button onClick={() => setAssistantOpen(false)} aria-label={language === 'fr' ? 'Fermer' : 'Close'}>×</button></div><p>{language === 'fr' ? 'Posez une question sur mon parcours, mes compétences ou mes certifications.' : 'Ask about my experience, skills or certifications.'}</p><form onSubmit={askAssistant}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={language === 'fr' ? 'Votre question…' : 'Your question…'} required /><button disabled={assistantBusy}>{assistantBusy ? '…' : (language === 'fr' ? 'Envoyer' : 'Ask')}</button></form>{assistantAnswer && <p className="assistant-answer" role="status">{assistantAnswer}</p>}</div>}
+        <button className="assistant-launcher" onClick={() => setAssistantOpen(!assistantOpen)}>{language === 'fr' ? '✳ Assistant IA' : '✳ AI assistant'}</button>
+      </aside>
     </main>
   )
 }
