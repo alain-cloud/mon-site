@@ -20,6 +20,20 @@ function sections(body) {
   })
 }
 
+function parseProjectGroups(body) {
+  return body.split(/^##\s+/m).slice(1).map((group) => {
+    const [heading, ...projectSections] = group.split(/^###\s+/m)
+    const title = heading.split('\n')[0].trim()
+    const projects = projectSections.map((project) => {
+      const [projectTitle, ...rest] = project.split('\n')
+      const lines = rest.map((line) => line.trim()).filter(Boolean)
+      const role = (lines.shift() || '').replace(/^(Role|Rôle):\s*/, '')
+      return { title: projectTitle.trim(), role, description: lines.join(' ') }
+    })
+    return { title, projects }
+  })
+}
+
 function loadContent(language) {
   const profile = readMarkdown(language, 'profile').meta
   const impact = readMarkdown(language, 'impact')
@@ -27,6 +41,7 @@ function loadContent(language) {
   const experience = readMarkdown(language, 'experience')
   const credentials = readMarkdown(language, 'credentials')
   const community = readMarkdown(language, 'community').meta
+  const fujitsuProjects = readMarkdown(language, 'fujitsu-projects')
   const contact = readMarkdown(language, 'contact').meta
   const clean = (value) => value.replaceAll('**', '')
   const impactItems = sections(impact.body).map(({ title, lines }) => [title, lines])
@@ -35,6 +50,7 @@ function loadContent(language) {
     const [date = '', roles = '', ...description] = lines.split('\n').filter(Boolean)
     return { company, date, title: clean(roles), text: description.join(' ') }
   })
+  const projectGroups = parseProjectGroups(fujitsuProjects.body)
   const credentialSections = sections(credentials.body)
   const getCredential = (name) => credentialSections.find((section) => section.title === name)
   const certs = getCredential('Certifications').lines.split('\n').filter(Boolean).map((line) => line.replace(/^- /, ''))
@@ -47,7 +63,8 @@ function loadContent(language) {
     expertiseEyebrow: expertise.meta.eyebrow, expertiseTitle: expertise.meta.title,
     expertiseIntro: expertise.meta.intro, expertise: expertiseItems,
     experienceEyebrow: experience.meta.eyebrow, experienceTitle: experience.meta.title,
-    experienceIntro: experience.meta.intro, jobs,
+    experienceIntro: experience.meta.intro, experienceDetailsLabel: experience.meta.detailsLabel, jobs,
+    projectsToggleLabel: fujitsuProjects.meta.toggleLabel, projectRoleLabel: fujitsuProjects.meta.roleLabel, projectGroups,
     credentialsEyebrow: credentials.meta.eyebrow, credentialsTitle: credentials.meta.title,
     certs, education: credentials.meta.educationLabel, educationText: education.lines.split('\n').map((line) => line.replace(/^- /, '')).join('\n'),
     credentialsIntro: credentials.meta.intro,
@@ -364,7 +381,7 @@ export default function App() {
       <section className="experience-section" id="experience">
         <div className="section-wrap experience-inner">
           <div className="section-heading"><p className="eyebrow">{t.experienceEyebrow}</p><h2>{t.experienceTitle}</h2><p className="section-intro">{t.experienceIntro}</p></div>
-          <div className="timeline">{t.jobs.map((job) => <article className="job" key={job.company}><div className="job-date">{job.date}</div><div className="job-content"><span className="timeline-dot" /><h3>{job.company}</h3><p className="job-title">{job.title}</p><p className="job-description">{job.text}</p></div></article>)}</div>
+          <div className="timeline">{t.jobs.map((job) => <article className="job" key={job.company}><div className="job-date">{job.date}</div><div className="job-content"><span className="timeline-dot" /><h3>{job.company}</h3><p className="job-title">{job.title}</p><details className="job-overview"><summary>{t.experienceDetailsLabel}</summary><p className="job-description">{job.text}</p></details>{job.company.startsWith('Fujitsu') && <details className="job-projects"><summary>{t.projectsToggleLabel}</summary><div className="project-groups">{t.projectGroups.map((group) => <section className="project-group" key={group.title}><h4>{group.title}</h4>{group.projects.map((project) => <details className="project-entry" key={project.title}><summary>{project.title}</summary><div className="project-entry-body"><p><strong>{t.projectRoleLabel} :</strong> {project.role}</p><p>{project.description}</p></div></details>)}</section>)}</div></details>}</div></article>)}</div>
         </div>
       </section>
 

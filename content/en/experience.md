@@ -2,6 +2,7 @@
 eyebrow: CAREER HISTORY
 title: A career spanning more than two decades.
 intro: From IT operations and infrastructure to technology leadership and executive advisory.
+detailsLabel: View role details
 ---
 ## Fujitsu · France
 2023 — Present

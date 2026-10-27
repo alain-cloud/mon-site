@@ -2,6 +2,7 @@
 eyebrow: PARCOURS PROFESSIONNEL
 title: Plus de deux décennies au service de la technologie.
 intro: Des opérations informatiques et des infrastructures à la direction technologique et au conseil stratégique.
+detailsLabel: Voir les détails du rôle
 ---
 ## Fujitsu · France
 2023 — Aujourd’hui

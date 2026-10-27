@@ -1,6 +1,6 @@
 # Modifier le portfolio
 
-Les contenus visibles sont dans `content/fr/` et `content/en/`. Chaque dossier contient les mêmes sept fichiers : `profile.md`, `impact.md`, `expertise.md`, `community.md`, `experience.md`, `credentials.md` et `contact.md`.
+Les contenus visibles sont dans `content/fr/` et `content/en/`. Chaque dossier contient les mêmes huit fichiers : `profile.md`, `impact.md`, `expertise.md`, `community.md`, `experience.md`, `fujitsu-projects.md`, `credentials.md` et `contact.md`.
 
 1. Ouvrir le fichier de la langue à modifier dans VS Code.
 2. Modifier les valeurs de l’en-tête entre les deux lignes `---`, ou le texte sous les titres `##`.
@@ -10,6 +10,8 @@ Les contenus visibles sont dans `content/fr/` et `content/en/`. Chaque dossier c
 Pour une expérience professionnelle, garder la structure d’un bloc : titre d’entreprise `##`, période sur la ligne suivante, poste(s) en gras sur la ligne d’après, puis description. Les mêmes fichiers alimentent le CV PDF généré dans le navigateur au clic sur « Télécharger le CV ».
 
 Dans `community.md`, modifier les valeurs de l’en-tête pour changer le texte, le lien de l’article Fujitsu ou les titres, identifiants et durées des vidéos YouTube intégrées.
+
+Dans `fujitsu-projects.md`, chaque groupe de clients est anonymisé. Les entrées restent repliées dans la section Expérience et peuvent être modifiées ou complétées dans ce fichier. Une entrée se compose d’un titre, d’une ligne `Rôle :` et d’un court paragraphe de contribution. Les résumés des autres employeurs sont dans `experience.md`; ajoute les projets détaillés à mesure que tu les documentes.
 
 ## Assistant recruteur
 
