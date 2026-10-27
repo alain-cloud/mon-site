@@ -34,6 +34,11 @@ function parseProjectGroups(body) {
   })
 }
 
+function ProjectDetails({ groups, toggleLabel, roleLabel }) {
+  if (!groups?.length) return null
+  return <details className="job-projects"><summary>{toggleLabel}</summary><div className="project-groups">{groups.map((group) => <section className="project-group" key={group.title}><h4>{group.title}</h4>{group.projects.map((project) => <details className="project-entry" key={project.title}><summary>{project.title}</summary><div className="project-entry-body"><p><strong>{roleLabel} :</strong> {project.role}</p><p>{project.description}</p></div></details>)}</section>)}</div></details>
+}
+
 function loadContent(language) {
   const profile = readMarkdown(language, 'profile').meta
   const impact = readMarkdown(language, 'impact')
@@ -42,6 +47,7 @@ function loadContent(language) {
   const credentials = readMarkdown(language, 'credentials')
   const community = readMarkdown(language, 'community').meta
   const fujitsuProjects = readMarkdown(language, 'fujitsu-projects')
+  const careerProjects = readMarkdown(language, 'career-projects')
   const contact = readMarkdown(language, 'contact').meta
   const clean = (value) => value.replaceAll('**', '')
   const impactItems = sections(impact.body).map(({ title, lines }) => [title, lines])
@@ -51,6 +57,7 @@ function loadContent(language) {
     return { company, date, title: clean(roles), text: description.join(' ') }
   })
   const projectGroups = parseProjectGroups(fujitsuProjects.body)
+  const careerProjectGroups = parseProjectGroups(careerProjects.body)
   const credentialSections = sections(credentials.body)
   const getCredential = (name) => credentialSections.find((section) => section.title === name)
   const certs = getCredential('Certifications').lines.split('\n').filter(Boolean).map((line) => line.replace(/^- /, ''))
@@ -65,6 +72,7 @@ function loadContent(language) {
     experienceEyebrow: experience.meta.eyebrow, experienceTitle: experience.meta.title,
     experienceIntro: experience.meta.intro, experienceDetailsLabel: experience.meta.detailsLabel, jobs,
     projectsToggleLabel: fujitsuProjects.meta.toggleLabel, projectRoleLabel: fujitsuProjects.meta.roleLabel, projectGroups,
+    careerProjectsToggleLabel: careerProjects.meta.toggleLabel, careerProjectRoleLabel: careerProjects.meta.roleLabel, careerProjectGroups,
     credentialsEyebrow: credentials.meta.eyebrow, credentialsTitle: credentials.meta.title,
     certs, education: credentials.meta.educationLabel, educationText: education.lines.split('\n').map((line) => line.replace(/^- /, '')).join('\n'),
     credentialsIntro: credentials.meta.intro,
@@ -381,7 +389,17 @@ export default function App() {
       <section className="experience-section" id="experience">
         <div className="section-wrap experience-inner">
           <div className="section-heading"><p className="eyebrow">{t.experienceEyebrow}</p><h2>{t.experienceTitle}</h2><p className="section-intro">{t.experienceIntro}</p></div>
-          <div className="timeline">{t.jobs.map((job) => <article className="job" key={job.company}><div className="job-date">{job.date}</div><div className="job-content"><span className="timeline-dot" /><h3>{job.company}</h3><p className="job-title">{job.title}</p><details className="job-overview"><summary>{t.experienceDetailsLabel}</summary><p className="job-description">{job.text}</p></details>{job.company.startsWith('Fujitsu') && <details className="job-projects"><summary>{t.projectsToggleLabel}</summary><div className="project-groups">{t.projectGroups.map((group) => <section className="project-group" key={group.title}><h4>{group.title}</h4>{group.projects.map((project) => <details className="project-entry" key={project.title}><summary>{project.title}</summary><div className="project-entry-body"><p><strong>{t.projectRoleLabel} :</strong> {project.role}</p><p>{project.description}</p></div></details>)}</section>)}</div></details>}</div></article>)}</div>
+          <div className="timeline">{t.jobs.map((job) => {
+            const careerProjects = t.careerProjectGroups.find((group) => job.company.startsWith(group.title))
+            return <article className="job" key={job.company}>
+              <div className="job-date">{job.date}</div>
+              <div className="job-content"><span className="timeline-dot" /><h3>{job.company}</h3><p className="job-title">{job.title}</p>
+                <details className="job-overview"><summary>{t.experienceDetailsLabel}</summary><p className="job-description">{job.text}</p></details>
+                {job.company.startsWith('Fujitsu') && <ProjectDetails groups={t.projectGroups} toggleLabel={t.projectsToggleLabel} roleLabel={t.projectRoleLabel} />}
+                {careerProjects && <ProjectDetails groups={[careerProjects]} toggleLabel={t.careerProjectsToggleLabel} roleLabel={t.careerProjectRoleLabel} />}
+              </div>
+            </article>
+          })}</div>
         </div>
       </section>
 
