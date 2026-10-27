@@ -1,0 +1,119 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+
+:root {
+  font-family: Inter, sans-serif;
+  color: #f5f5f5;
+  background: #0b0b12;
+  font-synthesis: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 32px 8%;
+  background:
+    radial-gradient(ellipse at 70% 25%, #42206a88, transparent 45%),
+    radial-gradient(ellipse at 15% 70%, #123c5980, transparent 40%),
+    #0b0b12;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav a, footer {
+  color: #c7c4d5;
+  text-decoration: none;
+}
+
+.logo {
+  font-weight: 800;
+  color: white;
+  letter-spacing: 2px;
+}
+
+.hero {
+  max-width: 850px;
+  margin: 120px auto 100px;
+}
+
+.eyebrow {
+  color: #c4a4ff;
+  letter-spacing: 3px;
+  font-size: 12px;
+}
+
+h1 {
+  font-size: clamp(48px, 9vw, 96px);
+  line-height: 1.05;
+  letter-spacing: -5px;
+}
+
+h1 span {
+  color: #b79aff;
+}
+
+.description {
+  max-width: 470px;
+  color: #b7b5c5;
+  line-height: 1.8;
+}
+
+.button, button {
+  display: inline-block;
+  margin-top: 22px;
+  padding: 14px 20px;
+  border: 0;
+  border-radius: 12px;
+  background: #b79aff;
+  color: #171020;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.counter {
+  max-width: 850px;
+  margin: 0 auto 100px;
+  padding: 28px;
+  border: 1px solid #ffffff20;
+  border-radius: 20px;
+  background: #ffffff08;
+}
+
+.counter p {
+  color: #c7c4d5;
+}
+
+footer {
+  padding: 25px 0;
+  border-top: 1px solid #ffffff20;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 24px;
+  }
+
+  .hero {
+    margin-top: 90px;
+  }
+
+  h1 {
+    letter-spacing: -2px;
+  }
+}
