@@ -28,8 +28,10 @@ button { font: inherit; }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #3a82cb; box-shadow: 0 0 0 4px #e0efff; }
 .role-label, .eyebrow { color: #718198; font-size: 9px; letter-spacing: 1.8px; font-weight: 700; }
 .role-label { margin: 31px 0 13px; }
-.hero h1 { max-width: 680px; margin: 0; font: 500 clamp(42px, 5.3vw, 68px)/1.09 'Manrope', sans-serif; letter-spacing: -4px; }
-.hero h1 em { color: #2f70b7; font-style: normal; }
+.hero-name { margin: 0 0 24px; color: #162840; font: 800 clamp(31px, 4vw, 49px)/1.05 'Manrope', sans-serif; letter-spacing: -2.4px; }
+.hero-name span { color: #2f70b7; }
+.hero h2 { max-width: 680px; margin: 0; font: 500 clamp(42px, 5.3vw, 68px)/1.09 'Manrope', sans-serif; letter-spacing: -4px; }
+.hero h2 em { color: #2f70b7; font-style: normal; }
 .hero-intro { max-width: 485px; margin: 24px 0 0; color: #5b6c82; font-size: 15px; line-height: 1.8; }
 .hero-actions { display: flex; align-items: center; gap: 25px; margin-top: 31px; }
 .button { display: inline-flex; align-items: center; justify-content: space-between; gap: 28px; min-height: 47px; padding: 0 17px; font-size: 11px; font-weight: 700; text-decoration: none; transition: transform .2s, background .2s; }
@@ -169,7 +171,8 @@ button { font: inherit; }
   .header-download span { margin-left: 5px; }
   .recruiter-assistant { right: 14px; bottom: 14px; }
   .hero { padding-top: 50px; }
-  .hero h1 { font-size: 43px; letter-spacing: -2.5px; }
+  .hero h2 { font-size: 43px; letter-spacing: -2.5px; }
+  .hero-name { font-size: 34px; letter-spacing: -1.8px; }
   .hero-intro { font-size: 13px; }
   .hero-card { min-height: 300px; padding: 24px; }
   .card-monogram { right: 74px; top: 99px; font-size: 67px; }

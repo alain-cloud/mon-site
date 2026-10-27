@@ -185,6 +185,24 @@ async function downloadCv(language, data) {
     text(job.title, 9, bold, ink, 8)
     text(job.text, 8.5, regular, muted, 8)
   }
+  heading(language === 'fr' ? 'Projets et réalisations sélectionnés' : 'Selected projects and contributions')
+  for (const group of [...data.projectGroups, ...data.careerProjectGroups]) {
+    text(group.title, 10, bold, navy)
+    for (const project of group.projects) {
+      text(project.title, 9, bold, ink, 8)
+      text(`${language === 'fr' ? 'Rôle' : 'Role'}: ${project.role}`, 8.5, bold, muted, 14)
+      text(project.description, 8.5, regular, ink, 14)
+    }
+  }
+  heading(language === 'fr' ? 'Prises de parole et contributions' : 'Speaking and community contributions')
+  text(`${data.articleTitle} · ${data.articleSource} · ${data.articleDate}`, 9, bold, navy)
+  text(data.articleDescription, 8.5, regular, ink)
+  text(data.articleUrl, 8, regular, blue)
+  text(data.videosTitle, 9, bold, navy)
+  text(`${data.videoOneTitle} (${data.videoOneDuration})`, 8.5, regular, ink, 8)
+  text(`https://www.youtube.com/watch?v=${data.videoOneId}`, 8, regular, blue, 8)
+  text(`${data.videoTwoTitle} (${data.videoTwoDuration})`, 8.5, regular, ink, 8)
+  text(`https://www.youtube.com/watch?v=${data.videoTwoId}`, 8, regular, blue, 8)
   heading(data.education)
   for (const item of data.educationText.split('\n')) text(item, 8.5, regular, ink, 8)
   heading(language === 'fr' ? 'Certifications' : 'Certifications')
@@ -385,9 +403,10 @@ export default function App() {
 
       <section className="hero section-wrap" id="about">
         <div className="hero-copy">
+          <h1 className="hero-name">Alaeddine <span>NAJJAR</span></h1>
           <div className="availability">{t.available}</div>
           <p className="role-label">{t.role}</p>
-          <h1>{t.heroLead} <em>{t.heroAccent}</em></h1>
+          <h2>{t.heroLead} <em>{t.heroAccent}</em></h2>
           <p className="hero-intro">{t.intro}</p>
           <div className="hero-actions">
             <a className="button button-dark" href="#experience">{t.cta}<span>↗</span></a>

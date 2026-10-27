@@ -2,10 +2,10 @@
 eyebrow: RÉSULTATS MESURABLES
 title: Une architecture au service des résultats.
 ---
-## 950 kEUR
+## 950 k€
 Économies annuelles grâce à l’optimisation des licences SQL.
 
-## 120 kEUR
+## 120 k€
 Économies Azure annuelles pour un compte stratégique.
 
 ## -80 %
