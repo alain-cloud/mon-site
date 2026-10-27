@@ -100,11 +100,18 @@ function loadContent(language) {
   const credentialSections = sections(credentials.body)
   const getCredential = (name) => credentialSections.find((section) => section.title === name)
   const certs = getCredential('Certifications').lines.split('\n').filter(Boolean).map((line) => line.replace(/^- /, ''))
-  const education = getCredential(language === 'fr' ? 'Formation' : 'Education')
-  const languages = getCredential(language === 'fr' ? 'Langues' : 'Languages')
-  const recognition = getCredential(language === 'fr' ? 'Distinction' : 'Recognition')
+  const credentialHeadings = {
+    en: ['Education', 'Languages', 'Recognition'],
+    fr: ['Formation', 'Langues', 'Distinction'],
+    es: ['Formación', 'Idiomas', 'Reconocimientos'],
+    ar: ['التعليم', 'اللغات', 'التقدير'],
+  }
+  const [educationHeading, languagesHeading, recognitionHeading] = credentialHeadings[language]
+  const education = getCredential(educationHeading)
+  const languages = getCredential(languagesHeading)
+  const recognition = getCredential(recognitionHeading)
   return {
-    ...profile, available: profile.badge, heroLead: profile.lead, heroAccent: profile.accent,
+    ...profile, available: profile.badge, based: profile.location, heroLead: profile.lead, heroAccent: profile.accent,
     impactLabel: impact.meta.eyebrow, impactTitle: impact.meta.title, impacts: impactItems,
     expertiseEyebrow: expertise.meta.eyebrow, expertiseTitle: expertise.meta.title,
     expertiseIntro: expertise.meta.intro, expertise: expertiseItems,
@@ -128,7 +135,12 @@ function loadContent(language) {
   }
 }
 
-const content = { en: loadContent('en'), fr: loadContent('fr') }
+const content = {
+  en: loadContent('en'),
+  fr: loadContent('fr'),
+  es: loadContent('es'),
+  ar: loadContent('ar'),
+}
 
 async function downloadCv(language, data) {
   const { PDFDocument, StandardFonts, rgb } = window.PDFLib || {}
@@ -175,26 +187,26 @@ async function downloadCv(language, data) {
   }
   addPage(true)
   text(data.intro, 9, regular, ink)
-  heading(language === 'fr' ? 'Résultats mesurables' : 'Selected impact')
+  heading(({ fr: 'Résultats mesurables', es: 'Resultados destacados', ar: 'أبرز النتائج' })[language] || 'Selected impact')
   for (const [metric, description] of data.impacts) text(`${metric}  ${description}`, 9, regular, ink, 8)
-  heading(language === 'fr' ? 'Expertise' : 'Expertise')
+  heading(({ fr: 'Expertise', es: 'Áreas de especialidad', ar: 'مجالات الخبرة' })[language] || 'Expertise')
   for (const [, title, description] of data.expertise) text(`${title}: ${description}`, 9, regular, ink, 8)
-  heading(language === 'fr' ? 'Expérience professionnelle' : 'Professional experience')
+  heading(({ fr: 'Expérience professionnelle', es: 'Experiencia profesional', ar: 'الخبرة المهنية' })[language] || 'Professional experience')
   for (const job of data.jobs) {
     text(`${job.company}  |  ${job.date}`, 10, bold, navy)
     text(job.title, 9, bold, ink, 8)
     text(job.text, 8.5, regular, muted, 8)
   }
-  heading(language === 'fr' ? 'Projets et réalisations sélectionnés' : 'Selected projects and contributions')
+  heading(({ fr: 'Projets et réalisations sélectionnés', es: 'Proyectos y contribuciones destacados', ar: 'أبرز المشاريع والمساهمات' })[language] || 'Selected projects and contributions')
   for (const group of [...data.projectGroups, ...data.careerProjectGroups]) {
     text(group.title, 10, bold, navy)
     for (const project of group.projects) {
       text(project.title, 9, bold, ink, 8)
-      text(`${language === 'fr' ? 'Rôle' : 'Role'}: ${project.role}`, 8.5, bold, muted, 14)
+      text(`${({ fr: 'Rôle', es: 'Función', ar: 'الدور' })[language] || 'Role'}: ${project.role}`, 8.5, bold, muted, 14)
       text(project.description, 8.5, regular, ink, 14)
     }
   }
-  heading(language === 'fr' ? 'Prises de parole et contributions' : 'Speaking and community contributions')
+  heading(({ fr: 'Prises de parole et contributions', es: 'Charlas y contribuciones a la comunidad', ar: 'المشاركات والمساهمات المجتمعية' })[language] || 'Speaking and community contributions')
   text(`${data.articleTitle} · ${data.articleSource} · ${data.articleDate}`, 9, bold, navy)
   text(data.articleDescription, 8.5, regular, ink)
   text(data.articleUrl, 8, regular, blue)
@@ -205,7 +217,7 @@ async function downloadCv(language, data) {
   text(`https://www.youtube.com/watch?v=${data.videoTwoId}`, 8, regular, blue, 8)
   heading(data.education)
   for (const item of data.educationText.split('\n')) text(item, 8.5, regular, ink, 8)
-  heading(language === 'fr' ? 'Certifications' : 'Certifications')
+  heading(({ fr: 'Certifications', es: 'Certificaciones' })[language] || 'Certifications')
   text(data.credentialsIntro, 9, regular, ink)
   for (const cert of data.certs) text(cert, 8.5, regular, ink, 8)
   heading(data.languages)
@@ -221,6 +233,11 @@ async function downloadCv(language, data) {
 const copy = {
   en: {
     nav: ['About', 'Expertise', 'Community', 'Experience', 'Credentials', 'Contact'],
+    mainNav: 'Main navigation',
+    languageSelection: 'Language selection',
+    assistantTitle: 'Recruiter assistant', assistantClose: 'Close', assistantPrompt: 'Ask about my experience, skills or certifications.',
+    assistantPlaceholder: 'Your question…', assistantSend: 'Ask', assistantReady: 'The assistant interface is ready. It needs a secure service connection before it can answer.',
+    assistantUnavailable: 'I cannot answer right now. Please try again shortly.', assistantLauncher: '✳ AI assistant',
     available: 'TECHNOLOGY EXECUTIVE · 20+ YEARS OF EXPERIENCE',
     role: 'ACCOUNTS CTO · FINOPS · CLOUD & ENTERPRISE ARCHITECTURE',
     heroLead: 'Technology at the crossroads of',
@@ -286,6 +303,11 @@ const copy = {
   },
   fr: {
     nav: ['Profil', 'Expertise', 'Communauté', 'Expérience', 'Certifications', 'Contact'],
+    mainNav: 'Navigation principale',
+    languageSelection: 'Choix de la langue',
+    assistantTitle: 'Assistant recruteur', assistantClose: 'Fermer', assistantPrompt: 'Posez une question sur mon parcours, mes compétences ou mes certifications.',
+    assistantPlaceholder: 'Votre question…', assistantSend: 'Envoyer', assistantReady: 'L’assistant est prêt côté interface. Il doit être relié à un service sécurisé avant de pouvoir répondre.',
+    assistantUnavailable: 'Je ne peux pas répondre pour le moment. Réessayez un peu plus tard.', assistantLauncher: '✳ Assistant IA',
     available: 'DIRIGEANT TECHNOLOGIQUE · PLUS DE 20 ANS D’EXPÉRIENCE',
     role: 'CTO DE COMPTES · FINOPS · CLOUD ET ARCHITECTURE D’ENTREPRISE',
     heroLead: 'La technologie au croisement de',
@@ -349,6 +371,24 @@ const copy = {
     backTop: 'Retour en haut ↑',
     pdfLang: 'FR',
   },
+  es: {
+    nav: ['Perfil', 'Especialidad', 'Comunidad', 'Experiencia', 'Certificaciones', 'Contacto'],
+    mainNav: 'Navegación principal', languageSelection: 'Selección de idioma', cv: 'Descargar CV',
+    assistantTitle: 'Asistente para selección', assistantClose: 'Cerrar', assistantPrompt: 'Pregunta sobre mi trayectoria, experiencia o certificaciones.',
+    assistantPlaceholder: 'Tu pregunta…', assistantSend: 'Enviar', assistantAsk: 'Preguntar',
+    assistantReady: 'La interfaz del asistente está lista. Necesita conectarse a un servicio seguro para responder.',
+    assistantUnavailable: 'No puedo responder ahora. Inténtalo de nuevo más tarde.', assistantLauncher: '✳ Asistente IA',
+    pdfLang: 'ES',
+  },
+  ar: {
+    nav: ['نبذة', 'الخبرة', 'المجتمع', 'المسيرة المهنية', 'الشهادات', 'التواصل'],
+    mainNav: 'التنقل الرئيسي', languageSelection: 'اختيار اللغة', cv: 'السيرة الذاتية PDF قريباً',
+    assistantTitle: 'مساعد التوظيف', assistantClose: 'إغلاق', assistantPrompt: 'اسأل عن مسيرتي أو خبرتي أو شهاداتي.',
+    assistantPlaceholder: 'اكتب سؤالك…', assistantSend: 'إرسال', assistantAsk: 'اسأل',
+    assistantReady: 'واجهة المساعد جاهزة، لكنها تحتاج إلى ربطها بخدمة آمنة قبل أن تتمكن من الإجابة.',
+    assistantUnavailable: 'لا أستطيع الإجابة الآن. حاول مرة أخرى لاحقاً.', assistantLauncher: '✳ مساعد ذكي',
+    pdfLang: 'AR',
+  },
 }
 
 export default function App() {
@@ -358,14 +398,12 @@ export default function App() {
   const [assistantAnswer, setAssistantAnswer] = useState('')
   const [assistantBusy, setAssistantBusy] = useState(false)
   const t = { ...copy[language], ...content[language] }
-  const makeCv = () => downloadCv(language, t).catch((error) => console.error('Unable to generate CV', error))
+  const makeCv = () => language === 'ar' ? undefined : downloadCv(language, t).catch((error) => console.error('Unable to generate CV', error))
   const askAssistant = async (event) => {
     event.preventDefault()
     const endpoint = import.meta.env.VITE_RECRUITER_ASSISTANT_ENDPOINT
     if (!endpoint) {
-      setAssistantAnswer(language === 'fr'
-        ? 'L’assistant est prêt côté interface. Il doit être relié à un service sécurisé avant de pouvoir répondre.'
-        : 'The assistant interface is ready. It needs a secure service connection before it can answer questions.')
+      setAssistantAnswer(t.assistantReady)
       return
     }
     setAssistantBusy(true); setAssistantAnswer('')
@@ -375,29 +413,28 @@ export default function App() {
       const result = await response.json()
       setAssistantAnswer(result.answer || '')
     } catch {
-      setAssistantAnswer(language === 'fr' ? 'Je ne peux pas répondre pour le moment. Réessayez un peu plus tard.' : 'I cannot answer right now. Please try again shortly.')
+      setAssistantAnswer(t.assistantUnavailable)
     } finally { setAssistantBusy(false) }
   }
 
   useEffect(() => {
     document.documentElement.lang = language
-    document.title = language === 'fr'
-      ? 'Alaeddine Najjar — CTO de comptes et dirigeant technologique'
-      : 'Alaeddine Najjar — Accounts CTO & Technology Executive'
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr'
+    document.title = ({ fr: 'Alaeddine Najjar — CTO de comptes et dirigeant technologique', es: 'Alaeddine Najjar — CTO de cuentas y líder tecnológico', ar: 'Alaeddine Najjar — مدير تقني وقيادي تكنولوجي' })[language] || 'Alaeddine Najjar — Accounts CTO & Technology Executive'
   }, [language])
 
   return (
     <main className="site-shell" id="top">
       <header className="topbar">
         <a className="wordmark" href="#top" aria-label="Alaeddine Najjar, home">AN<span>.</span></a>
-        <nav className="nav-links" aria-label={language === 'fr' ? 'Navigation principale' : 'Main navigation'}>
+        <nav className="nav-links" aria-label={t.mainNav}>
           {t.nav.map((label, index) => <a key={label} href={['#about', '#expertise', '#community', '#experience', '#credentials', '#contact'][index]}>{label}</a>)}
         </nav>
         <div className="top-actions">
-          <button className="language-switch" onClick={() => setLanguage(language === 'en' ? 'fr' : 'en')} aria-label={language === 'en' ? 'Passer en français' : 'Switch to English'}>
-            <span className={language === 'fr' ? 'active' : ''}>FR</span><i>/</i><span className={language === 'en' ? 'active' : ''}>EN</span>
-          </button>
-          <button className="header-download" onClick={makeCv}>{t.cv} <span>↗</span></button>
+          <div className="language-switch" role="group" aria-label={t.languageSelection}>
+            {['fr', 'en', 'es', 'ar'].map((code, index) => <span className="language-option" key={code}><button type="button" className={language === code ? 'active' : ''} aria-pressed={language === code} onClick={() => setLanguage(code)}>{code.toUpperCase()}</button>{index < 3 && <i>/</i>}</span>)}
+          </div>
+          <button className="header-download" onClick={makeCv} disabled={language === 'ar'}>{t.cv} <span>↗</span></button>
         </div>
       </header>
 
@@ -410,7 +447,7 @@ export default function App() {
           <p className="hero-intro">{t.intro}</p>
           <div className="hero-actions">
             <a className="button button-dark" href="#experience">{t.cta}<span>↗</span></a>
-            <button className="text-link" onClick={makeCv}>{t.cv}<span>↓</span></button>
+            <button className="text-link" onClick={makeCv} disabled={language === 'ar'}>{t.cv}<span>↓</span></button>
           </div>
           <p className="location"><span>⌖</span>{t.based}</p>
         </div>
@@ -466,11 +503,11 @@ export default function App() {
         <div className="credentials-grid"><div className="cert-list">{t.certs.map((cert) => <div className="cert-item" key={cert}><BrandLogo {...certificationBrand(cert)} className="cert-brand-logo" />{cert}</div>)}</div><div className="detail-cards"><article><p className="eyebrow">{t.education}</p><p className="detail-copy">{t.educationText.split('\n').map((line) => <span key={line}>{line}</span>)}</p></article><article><p className="eyebrow">{t.languages}</p><p className="detail-copy">{t.languageText.split('\n').map((line) => <span key={line}>{line}</span>)}</p></article><article><p className="eyebrow">{t.recognition}</p><p className="detail-copy">{t.recognitionText}</p></article></div></div>
       </section>
 
-      <section className="closing-section section-wrap" id="contact"><p className="eyebrow">{t.closingEyebrow}</p><h2>{t.closingTitle}</h2><p>{t.closingText}</p><div className="closing-actions"><button className="button button-light" onClick={makeCv}>{t.cv}<span>↓</span></button><a className="closing-link" href={`mailto:${t.emailAddress}`}>{t.email}<span>↗</span></a><a className="closing-link" href="https://www.linkedin.com/in/alaeddinenajjar/" target="_blank" rel="noreferrer">{t.linkedin}<span>↗</span></a></div><div className="closing-decoration">✳</div></section>
+      <section className="closing-section section-wrap" id="contact"><p className="eyebrow">{t.closingEyebrow}</p><h2>{t.closingTitle}</h2><p>{t.closingText}</p><div className="closing-actions"><button className="button button-light" onClick={makeCv} disabled={language === 'ar'}>{t.cv}<span>↓</span></button><a className="closing-link" href={`mailto:${t.emailAddress}`}>{t.email}<span>↗</span></a><a className="closing-link" href="https://www.linkedin.com/in/alaeddinenajjar/" target="_blank" rel="noreferrer">{t.linkedin}<span>↗</span></a></div><div className="closing-decoration">✳</div></section>
       <footer className="footer section-wrap"><span>{t.footer}</span><a href="#top">{t.backTop}</a></footer>
       <aside className="recruiter-assistant">
-        {assistantOpen && <div className="assistant-panel"><div className="assistant-heading"><strong>{language === 'fr' ? 'Assistant recruteur' : 'Recruiter assistant'}</strong><button onClick={() => setAssistantOpen(false)} aria-label={language === 'fr' ? 'Fermer' : 'Close'}>×</button></div><p>{language === 'fr' ? 'Posez une question sur mon parcours, mes compétences ou mes certifications.' : 'Ask about my experience, skills or certifications.'}</p><form onSubmit={askAssistant}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={language === 'fr' ? 'Votre question…' : 'Your question…'} required /><button disabled={assistantBusy}>{assistantBusy ? '…' : (language === 'fr' ? 'Envoyer' : 'Ask')}</button></form>{assistantAnswer && <p className="assistant-answer" role="status">{assistantAnswer}</p>}</div>}
-        <button className="assistant-launcher" onClick={() => setAssistantOpen(!assistantOpen)}>{language === 'fr' ? '✳ Assistant IA' : '✳ AI assistant'}</button>
+        {assistantOpen && <div className="assistant-panel"><div className="assistant-heading"><strong>{t.assistantTitle}</strong><button onClick={() => setAssistantOpen(false)} aria-label={t.assistantClose}>×</button></div><p>{t.assistantPrompt}</p><form onSubmit={askAssistant}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={t.assistantPlaceholder} required /><button disabled={assistantBusy}>{assistantBusy ? '…' : t.assistantSend}</button></form>{assistantAnswer && <p className="assistant-answer" role="status">{assistantAnswer}</p>}</div>}
+        <button className="assistant-launcher" onClick={() => setAssistantOpen(!assistantOpen)}>{t.assistantLauncher}</button>
       </aside>
     </main>
   )

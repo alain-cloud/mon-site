@@ -1,19 +1,21 @@
 # Modifier le portfolio
 
-Les contenus visibles sont dans `content/fr/` et `content/en/`. Chaque dossier contient les mêmes neuf fichiers : `profile.md`, `impact.md`, `expertise.md`, `community.md`, `experience.md`, `fujitsu-projects.md`, `career-projects.md`, `credentials.md` et `contact.md`.
+Les contenus visibles sont dans `content/fr/`, `content/en/`, `content/es/` et `content/ar/`. Chaque dossier contient les mêmes neuf fichiers : `profile.md`, `impact.md`, `expertise.md`, `community.md`, `experience.md`, `fujitsu-projects.md`, `career-projects.md`, `credentials.md` et `contact.md`.
 
 1. Ouvrir le fichier de la langue à modifier dans VS Code.
 2. Modifier les valeurs de l’en-tête entre les deux lignes `---`, ou le texte sous les titres `##`.
 3. Enregistrer. Vite actualise le site local automatiquement.
 4. Pour mettre à jour le site public, reconstruire puis pousser les changements sur GitHub.
 
-Pour une expérience professionnelle, garder la structure d’un bloc : titre d’entreprise `##`, période sur la ligne suivante, poste(s) en gras sur la ligne d’après, puis description. Les mêmes fichiers alimentent le CV PDF généré dans le navigateur au clic sur « Télécharger le CV ».
+Pour une expérience professionnelle, garder la structure d’un bloc : titre d’entreprise `##`, période sur la ligne suivante, poste(s) en gras sur la ligne d’après, puis description. Les mêmes fichiers alimentent le CV PDF généré dans le navigateur au clic sur « Télécharger le CV ». La génération PDF arabe est désactivée pour l’instant, car le générateur actuel ne prend pas en charge le façonnage des caractères arabes.
 
 Dans `community.md`, modifier les valeurs de l’en-tête pour changer le texte, le lien de l’article Fujitsu ou les titres, identifiants et durées des vidéos YouTube intégrées.
 
 Dans `fujitsu-projects.md`, chaque groupe de clients est anonymisé. Les entrées restent repliées dans la section Expérience et peuvent être modifiées ou complétées dans ce fichier. Une entrée se compose d’un titre, d’une ligne `Rôle :` et d’un court paragraphe de contribution. Les résumés des autres employeurs sont dans `experience.md`; ajoute les projets détaillés à mesure que tu les documentes.
 
 Dans `career-projects.md`, les expériences Desjardins, Cortex, Lumenpulse, CA Technologies et Sopra HR Software contiennent des projets détaillés issus du CV. Les noms des clients de Cortex sont remplacés par leur secteur d’activité.
+
+La version arabe utilise une mise en page de droite à gauche. Les noms officiels des certifications restent dans leur langue d’origine.
 
 Les logos d’entreprises et d’organismes de certification sont stockés localement dans `public/logos/`. Les marques disponibles proviennent du projet [Simple Icons](https://github.com/simple-icons/simple-icons). Quand un logo n’est pas disponible dans cette collection, le site affiche un monogramme avec les initiales de l’entreprise ou de l’organisme.
 
