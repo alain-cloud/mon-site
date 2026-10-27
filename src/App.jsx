@@ -49,6 +49,7 @@ function loadContent(language) {
     experienceIntro: experience.meta.intro, jobs,
     credentialsEyebrow: credentials.meta.eyebrow, credentialsTitle: credentials.meta.title,
     certs, education: credentials.meta.educationLabel, educationText: education.lines.split('\n').map((line) => line.replace(/^- /, '')).join('\n'),
+    credentialsIntro: credentials.meta.intro,
     languages: credentials.meta.languagesLabel, languageText: languages.lines.split('\n').map((line) => line.replace(/^- /, '')).join('\n'),
     recognition: credentials.meta.recognitionLabel, recognitionText: recognition.lines.replace(/^- /, ''),
     closingEyebrow: contact.eyebrow, closingTitle: contact.title, closingText: contact.text,
@@ -80,7 +81,7 @@ async function downloadCv(language, data) {
       y = H - 180
     } else y = H - margin
   }
-  const normalize = (value) => String(value).replace(/[–—]/g, '-').replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/€/g, 'EUR').replace(/·/g, ' | ').replace(/%/g, '%')
+  const normalize = (value) => String(value).replace(/[–—]/g, '-').replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/·/g, ' | ')
   const linesFor = (value, font, size, maxWidth) => {
     const words = normalize(value).split(/\s+/); const lines = []; let line = ''
     for (const word of words) {
@@ -116,6 +117,7 @@ async function downloadCv(language, data) {
   heading(data.education)
   for (const item of data.educationText.split('\n')) text(item, 8.5, regular, ink, 8)
   heading(language === 'fr' ? 'Certifications' : 'Certifications')
+  text(data.credentialsIntro, 9, regular, ink)
   for (const cert of data.certs) text(cert, 8.5, regular, ink, 8)
   heading(data.languages)
   for (const item of data.languageText.split('\n')) text(item, 8.5, regular, ink, 8)
@@ -136,7 +138,7 @@ const copy = {
     heroAccent: 'innovation and strategy.',
     intro: 'I lead teams, shape resilient IT platforms and guide digital transformation so technology advances business objectives. My experience spans cloud computing, cybersecurity, software and enterprise architecture.',
     cta: 'Explore my experience',
-    cv: 'Download résumé',
+    cv: 'Download CV',
     based: 'Based in France · International experience',
     years: '20+ years',
     yearsLabel: 'in technology leadership',
@@ -210,8 +212,8 @@ const copy = {
     impactLabel: 'RÉSULTATS MESURABLES',
     impactTitle: 'Une architecture au service des résultats.',
     impacts: [
-      ['950 k€', 'd’économies annuelles grâce à l’optimisation des licences SQL'],
-      ['120 k€', 'd’économies Azure annuelles pour un compte stratégique'],
+      ['950 K€', 'd’économies annuelles grâce à l’optimisation des licences SQL'],
+      ['120 K€', 'd’économies Azure annuelles pour un compte stratégique'],
       ['−80 %', 'de temps consacré aux rapports de conformité'],
       ['−30 %', 'd’incidents de sécurité après couverture complète des ressources'],
     ],
@@ -348,7 +350,7 @@ export default function App() {
       </section>
 
       <section className="credentials-section section-wrap" id="credentials">
-        <div className="section-heading"><p className="eyebrow">{t.credentialsEyebrow}</p><h2>{t.credentialsTitle}</h2></div>
+        <div className="section-heading"><p className="eyebrow">{t.credentialsEyebrow}</p><h2>{t.credentialsTitle}</h2><p className="section-intro">{t.credentialsIntro}</p></div>
         <div className="credentials-grid"><div className="cert-list">{t.certs.map((cert) => <div className="cert-item" key={cert}><span>✳</span>{cert}</div>)}</div><div className="detail-cards"><article><p className="eyebrow">{t.education}</p><p className="detail-copy">{t.educationText.split('\n').map((line) => <span key={line}>{line}</span>)}</p></article><article><p className="eyebrow">{t.languages}</p><p className="detail-copy">{t.languageText.split('\n').map((line) => <span key={line}>{line}</span>)}</p></article><article><p className="eyebrow">{t.recognition}</p><p className="detail-copy">{t.recognitionText}</p></article></div></div>
       </section>
 
