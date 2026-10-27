@@ -15,6 +15,8 @@ Dans `fujitsu-projects.md`, chaque groupe de clients est anonymisé. Les entrée
 
 Dans `career-projects.md`, les expériences Desjardins, Cortex, Lumenpulse, CA Technologies et Sopra HR Software contiennent des projets détaillés issus du CV. Les noms des clients de Cortex sont remplacés par leur secteur d’activité.
 
+Les logos d’entreprises et d’organismes de certification sont stockés localement dans `public/logos/`. Les marques disponibles proviennent du projet [Simple Icons](https://github.com/simple-icons/simple-icons). Quand un logo n’est pas disponible dans cette collection, le site affiche un monogramme avec les initiales de l’entreprise ou de l’organisme.
+
 ## Assistant recruteur
 
 L’interface du portfolio envoie `{ language, question, profile }` en POST JSON à l’URL indiquée par `VITE_RECRUITER_ASSISTANT_ENDPOINT`. Le service doit répondre avec `{ "answer": "..." }`. Cette URL est publique dans le site; une clé d’IA ne doit jamais être mise dans les variables `VITE_*` ni dans le navigateur. Le service côté serveur doit conserver la clé privée et limiter les requêtes. Sans endpoint configuré, l’interface indique qu’elle attend sa connexion.

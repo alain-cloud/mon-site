@@ -112,8 +112,16 @@ button { font: inherit; }
 .credentials-section > .section-heading { max-width: 530px; }
 .credentials-grid { margin-top: 40px; display: grid; grid-template-columns: 1.05fr .95fr; gap: 70px; }
 .cert-list { border-top: 1px solid #d8e2ed; }
-.cert-item { padding: 13px 0; display: flex; gap: 11px; align-items: baseline; border-bottom: 1px solid #d8e2ed; font-size: 11px; color: #55677f; }
-.cert-item span { color: #3579c4; font-size: 12px; }
+.cert-item { padding: 13px 0; display: flex; gap: 11px; align-items: center; border-bottom: 1px solid #d8e2ed; font-size: 11px; line-height: 1.55; color: #55677f; }
+.brand-logo { display: inline-grid; flex: 0 0 auto; width: 25px; height: 25px; place-items: center; overflow: hidden; border: 1px solid #e1e8ef; border-radius: 6px; background: #fff; color: #2f70b7; }
+.brand-logo img { display: block; width: 17px; height: 17px; object-fit: contain; }
+.brand-logo-fallback { border-color: #dce7f2; background: #edf4fb; }
+.brand-logo-fallback > span { color: #31699f; font-size: 8px; font-weight: 800; letter-spacing: -.2px; }
+.cert-brand-logo { width: 22px; height: 22px; border: 0; background: transparent; }
+.cert-brand-logo img { width: 19px; height: 19px; }
+.employer-heading { display: flex; align-items: center; gap: 11px; }
+.employer-brand-logo { width: 29px; height: 29px; border-radius: 7px; }
+.employer-brand-logo img { width: 21px; height: 21px; }
 .detail-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
 .detail-cards article { background: #eaf1f8; padding: 20px 17px; min-height: 118px; }
 .detail-cards .eyebrow { margin: 0 0 15px; }

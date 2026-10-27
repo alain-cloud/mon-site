@@ -39,6 +39,45 @@ function ProjectDetails({ groups, toggleLabel, roleLabel }) {
   return <details className="job-projects"><summary>{toggleLabel}</summary><div className="project-groups">{groups.map((group) => <section className="project-group" key={group.title}><h4>{group.title}</h4>{group.projects.map((project) => <details className="project-entry" key={project.title}><summary>{project.title}</summary><div className="project-entry-body"><p><strong>{roleLabel} :</strong> {project.role}</p><p>{project.description}</p></div></details>)}</section>)}</div></details>
 }
 
+const employerBrands = [
+  { match: 'Fujitsu', slug: 'fujitsu', initials: 'F' },
+  { match: 'Desjardins', initials: 'D' },
+  { match: 'Cortex', initials: 'CGH' },
+  { match: 'Lumenpulse', initials: 'LP' },
+  { match: 'CA Technologies', initials: 'CA' },
+  { match: 'Sopra HR Software', initials: 'S' },
+  { match: 'Orange Business Services', slug: 'orange', initials: 'O' },
+  { match: 'Dell Technologies', slug: 'dell', initials: 'D' },
+  { match: 'Printing & Packaging Solutions', initials: 'P&P' },
+  { match: 'Groupe Beneteau', initials: 'B' },
+]
+
+function BrandLogo({ slug, initials, label, className = '' }) {
+  const [failed, setFailed] = useState(!slug)
+  return <span className={`brand-logo ${className} ${failed ? 'brand-logo-fallback' : ''}`} aria-hidden="true" title={label}>
+    {slug && !failed && <img src={`${import.meta.env.BASE_URL}logos/${slug}.svg`} alt="" loading="lazy" onError={() => setFailed(true)} />}
+    {failed && <span aria-hidden="true">{initials}</span>}
+  </span>
+}
+
+function employerBrand(company) {
+  return employerBrands.find((brand) => company.startsWith(brand.match)) || { initials: company.slice(0, 2).toUpperCase() }
+}
+
+function certificationBrand(cert) {
+  if (/anthropic|claude/i.test(cert)) return { slug: 'anthropic', initials: 'A', label: 'Anthropic' }
+  if (/microsoft|azure/i.test(cert)) return { slug: 'microsoft', initials: 'MS', label: 'Microsoft' }
+  if (/dell/i.test(cert)) return { slug: 'dell', initials: 'D', label: 'Dell Technologies' }
+  if (/linux foundation|finops/i.test(cert)) return { slug: 'linuxfoundation', initials: 'LF', label: 'The Linux Foundation' }
+  if (/amazon web services|\baws\b/i.test(cert)) return { slug: 'amazonaws', initials: 'AWS', label: 'Amazon Web Services' }
+  if (/citrix/i.test(cert)) return { slug: 'citrix', initials: 'C', label: 'Citrix' }
+  if (/cisco|\bccna\b/i.test(cert)) return { slug: 'cisco', initials: 'C', label: 'Cisco' }
+  if (/xm cyber/i.test(cert)) return { initials: 'XM', label: 'XM Cyber' }
+  if (/open group|togaf/i.test(cert)) return { initials: 'OG', label: 'The Open Group' }
+  if (/exin|\bitil\b/i.test(cert)) return { initials: 'EX', label: 'EXIN' }
+  return { initials: cert.slice(0, 2).toUpperCase(), label: cert }
+}
+
 function loadContent(language) {
   const profile = readMarkdown(language, 'profile').meta
   const impact = readMarkdown(language, 'impact')
@@ -393,7 +432,7 @@ export default function App() {
             const careerProjects = t.careerProjectGroups.find((group) => job.company.startsWith(group.title))
             return <article className="job" key={job.company}>
               <div className="job-date">{job.date}</div>
-              <div className="job-content"><span className="timeline-dot" /><h3>{job.company}</h3><p className="job-title">{job.title}</p>
+              <div className="job-content"><span className="timeline-dot" /><h3 className="employer-heading"><BrandLogo {...employerBrand(job.company)} label={job.company} className="employer-brand-logo" />{job.company}</h3><p className="job-title">{job.title}</p>
                 <details className="job-overview"><summary>{t.experienceDetailsLabel}</summary><p className="job-description">{job.text}</p></details>
                 {job.company.startsWith('Fujitsu') && <ProjectDetails groups={t.projectGroups} toggleLabel={t.projectsToggleLabel} roleLabel={t.projectRoleLabel} />}
                 {careerProjects && <ProjectDetails groups={[careerProjects]} toggleLabel={t.careerProjectsToggleLabel} roleLabel={t.careerProjectRoleLabel} />}
@@ -405,7 +444,7 @@ export default function App() {
 
       <section className="credentials-section section-wrap" id="credentials">
         <div className="section-heading"><p className="eyebrow">{t.credentialsEyebrow}</p><h2>{t.credentialsTitle}</h2><p className="section-intro">{t.credentialsIntro}</p></div>
-        <div className="credentials-grid"><div className="cert-list">{t.certs.map((cert) => <div className="cert-item" key={cert}><span>✳</span>{cert}</div>)}</div><div className="detail-cards"><article><p className="eyebrow">{t.education}</p><p className="detail-copy">{t.educationText.split('\n').map((line) => <span key={line}>{line}</span>)}</p></article><article><p className="eyebrow">{t.languages}</p><p className="detail-copy">{t.languageText.split('\n').map((line) => <span key={line}>{line}</span>)}</p></article><article><p className="eyebrow">{t.recognition}</p><p className="detail-copy">{t.recognitionText}</p></article></div></div>
+        <div className="credentials-grid"><div className="cert-list">{t.certs.map((cert) => <div className="cert-item" key={cert}><BrandLogo {...certificationBrand(cert)} className="cert-brand-logo" />{cert}</div>)}</div><div className="detail-cards"><article><p className="eyebrow">{t.education}</p><p className="detail-copy">{t.educationText.split('\n').map((line) => <span key={line}>{line}</span>)}</p></article><article><p className="eyebrow">{t.languages}</p><p className="detail-copy">{t.languageText.split('\n').map((line) => <span key={line}>{line}</span>)}</p></article><article><p className="eyebrow">{t.recognition}</p><p className="detail-copy">{t.recognitionText}</p></article></div></div>
       </section>
 
       <section className="closing-section section-wrap" id="contact"><p className="eyebrow">{t.closingEyebrow}</p><h2>{t.closingTitle}</h2><p>{t.closingText}</p><div className="closing-actions"><button className="button button-light" onClick={makeCv}>{t.cv}<span>↓</span></button><a className="closing-link" href={`mailto:${t.emailAddress}`}>{t.email}<span>↗</span></a><a className="closing-link" href="https://www.linkedin.com/in/alaeddinenajjar/" target="_blank" rel="noreferrer">{t.linkedin}<span>↗</span></a></div><div className="closing-decoration">✳</div></section>
