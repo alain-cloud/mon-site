@@ -4,7 +4,7 @@ title: مواءمة الاستراتيجية التقنية مع نمو الأع
 text: متاح لأدوار القيادة التقنية واستراتيجية السحابة والاستشارات.
 emailLabel: راسل Alaeddine
 emailCta: تواصل معي عبر البريد الإلكتروني
-email: alaeddine.najjar@gmail.com
+email: contact@alaeddinenajjar.com
 linkedinLabel: عرض ملفي على LinkedIn
 telegramUsername: alanajj
 telegramLabel: تواصل معي عبر Telegram

@@ -4,7 +4,7 @@ title: Bringing technology strategy and business growth together.
 text: For technology leadership, cloud strategy and business advisory.
 emailLabel: Email Alaeddine
 emailCta: Contact me by email
-email: alaeddine.najjar@gmail.com
+email: contact@alaeddinenajjar.com
 linkedinLabel: View my LinkedIn profile
 telegramUsername: alanajj
 telegramLabel: Chat with me on Telegram
