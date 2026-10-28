@@ -7,7 +7,7 @@ detailsLabel: Ver detalles del puesto
 ## Fujitsu · Francia
 2023 — Actualidad
 **CTO de cuentas** (sept. 2024 — actualidad); **jefe de equipo técnico y arquitecto cloud AMCS** (sept. 2023 — ago. 2024)
-Enfoque actual: FinOps, TOGAF, ITIL, Azure, AWS y Citrix.
+Enfoque actual: FinOps, TOGAF, ITIL, Azure, AWS y Citrix. Asesoramiento a los equipos en oportunidades y propuestas de servicios gestionados, contribuyendo a dos contratos de Infraestructura y Workplace valorados respectivamente en más de 7 M€ y 15 M€, además de ampliaciones de alcance y extensiones de duración.
 
 ## Desjardins · Montreal
 2016 · 2021 — 2023

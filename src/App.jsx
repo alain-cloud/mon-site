@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 
 const mdFiles = import.meta.glob('../content/**/*.md', { query: '?raw', import: 'default', eager: true })
+const sectionIds = ['about', 'expertise', 'community', 'experience', 'credentials', 'contact']
 
 function readMarkdown(language, name) {
   const source = mdFiles[`../content/${language}/${name}.md`]
@@ -125,7 +126,10 @@ function loadContent(language) {
     languages: credentials.meta.languagesLabel, languageText: languages.lines.split('\n').map((line) => line.replace(/^- /, '')).join('\n'),
     recognition: credentials.meta.recognitionLabel, recognitionText: recognition.lines.replace(/^- /, ''),
     closingEyebrow: contact.eyebrow, closingTitle: contact.title, closingText: contact.text,
-    email: contact.emailLabel, emailAddress: contact.email, linkedin: contact.linkedinLabel, footer: contact.footer,
+    email: contact.emailLabel, emailCta: contact.emailCta, emailAddress: contact.email, linkedin: contact.linkedinLabel, footer: contact.footer,
+    telegramUrl: `https://t.me/${contact.telegramUsername}`, telegramLabel: contact.telegramLabel,
+    shareLabel: contact.shareLabel, copyLinkLabel: contact.copyLinkLabel, copiedLabel: contact.copiedLabel,
+    shareEyebrow: contact.shareEyebrow, shareTitle: contact.shareTitle, shareHelper: contact.shareHelper,
     communityEyebrow: community.eyebrow, communityTitle: community.title, communityIntro: community.intro,
     articleTitle: community.articleTitle, articleDate: community.articleDate, articleSource: community.articleSource,
     articleDescription: community.articleDescription, articleUrl: community.articleUrl,
@@ -230,6 +234,22 @@ async function downloadCv(language, data) {
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
+function printArabicCv(data) {
+  const printWindow = window.open('', '_blank')
+  if (!printWindow) return
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char])
+  const list = (items) => `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`
+  const projects = [...data.projectGroups, ...data.careerProjectGroups].map((group) => `<h3>${escapeHtml(group.title)}</h3>${group.projects.map((project) => `<article class="project"><h4>${escapeHtml(project.title)}</h4><p class="role">${escapeHtml(project.role)}</p><p>${escapeHtml(project.description)}</p></article>`).join('')}`).join('')
+  const html = `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>السيرة الذاتية - علاء الدين النّجار</title><style>
+    @page{size:A4;margin:17mm 18mm 20mm;@bottom-left{content:"علاء الدين النّجار · السيرة الذاتية";color:#64748b;font:9pt Arial} @bottom-right{content:counter(page);color:#64748b;font:9pt Arial}}
+    *{box-sizing:border-box}body{margin:0;color:#17263b;font:10pt/1.65 Arial,Tahoma,sans-serif;direction:rtl;text-align:right}header{background:#162840;color:white;padding:22px 26px;margin-bottom:20px}h1{font-size:23pt;margin:0 0 7px}header p{margin:4px 0;color:#dbeafe}section{margin:0 0 17px;break-inside:auto}h2{font-size:13pt;color:#2468a8;border-bottom:1px solid #cbd5e1;padding-bottom:5px;margin:18px 0 8px;break-after:avoid}h3{font-size:10.5pt;color:#162840;margin:12px 0 5px;break-after:avoid}h4{font-size:9.5pt;margin:0 0 2px}.role{color:#47627d;font-weight:bold;margin:0 0 3px}.project{break-inside:avoid;margin:0 0 8px}.job{break-inside:avoid;border-bottom:1px solid #dce4ed;padding:7px 0}.meta{color:#426c98;font-weight:bold}.intro{font-size:11pt}ul{padding-right:19px;margin:6px 0}li{margin:3px 0}.url{direction:ltr;text-align:left;overflow-wrap:anywhere;color:#2468a8;font-size:8pt}a{color:#2468a8}
+  </style></head><body><header><h1>علاء الدين النّجار</h1><p>${escapeHtml(data.role)}</p><p>${escapeHtml(data.emailAddress)} · ${escapeHtml(data.location)} · LinkedIn: linkedin.com/in/alaeddinenajjar</p></header><p class="intro">${escapeHtml(data.intro)}</p><section><h2>أبرز النتائج</h2>${data.impacts.map(([metric, description]) => `<article class="job"><strong class="meta">${escapeHtml(metric)}</strong><p>${escapeHtml(description)}</p></article>`).join('')}</section><section><h2>مجالات الخبرة</h2>${data.expertise.map(([, title, description]) => `<article class="job"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(description)}</p></article>`).join('')}</section><section><h2>الخبرة المهنية</h2>${data.jobs.map((job) => `<article class="job"><h3>${escapeHtml(job.company)}</h3><p class="meta">${escapeHtml(job.date)}</p><p class="role">${escapeHtml(job.title).replace(/\n/g, '<br>')}</p><p>${escapeHtml(job.text)}</p></article>`).join('')}</section><section><h2>المشاريع والمساهمات المختارة</h2>${projects}</section><section><h2>المشاركات والمجتمع المهني</h2><h3>${escapeHtml(data.articleTitle)}</h3><p>${escapeHtml(data.articleSource)} · ${escapeHtml(data.articleDate)}</p><p>${escapeHtml(data.articleDescription)}</p><p class="url">${escapeHtml(data.articleUrl)}</p><h3>${escapeHtml(data.videosTitle)}</h3><ul><li>${escapeHtml(data.videoOneTitle)} (${escapeHtml(data.videoOneDuration)})<br><span class="url">https://www.youtube.com/watch?v=${escapeHtml(data.videoOneId)}</span></li><li>${escapeHtml(data.videoTwoTitle)} (${escapeHtml(data.videoTwoDuration)})<br><span class="url">https://www.youtube.com/watch?v=${escapeHtml(data.videoTwoId)}</span></li></ul></section><section><h2>${escapeHtml(data.education)}</h2>${list(data.educationText.split('\n'))}</section><section><h2>الشهادات المهنية</h2><p>${escapeHtml(data.credentialsIntro)}</p>${list(data.certs)}</section><section><h2>${escapeHtml(data.languages)}</h2>${list(data.languageText.split('\n'))}</section><section><h2>${escapeHtml(data.recognition)}</h2><p>${escapeHtml(data.recognitionText)}</p></section></body></html>`
+  printWindow.document.open()
+  printWindow.document.write(html)
+  printWindow.document.close()
+  printWindow.addEventListener('load', () => window.setTimeout(() => { printWindow.focus(); printWindow.print() }, 500), { once: true })
+}
+
 const copy = {
   en: {
     nav: ['About', 'Expertise', 'Community', 'Experience', 'Credentials', 'Contact'],
@@ -253,7 +273,7 @@ const copy = {
     impactLabel: 'MEASURABLE IMPACT',
     impactTitle: 'Architecture that moves the numbers.',
     impacts: [
-      ['€950K', 'annual savings through SQL licensing optimization'],
+      ['950 k€', 'annual savings through SQL licensing optimization'],
       ['€120K', 'annual Azure savings for a strategic account'],
       ['−80%', 'time spent preparing compliance reports'],
       ['−30%', 'security incidents after full resource coverage'],
@@ -323,7 +343,7 @@ const copy = {
     impactLabel: 'RÉSULTATS MESURABLES',
     impactTitle: 'Une architecture au service des résultats.',
     impacts: [
-      ['950 K€', 'd’économies annuelles grâce à l’optimisation des licences SQL'],
+      ['950 k€', 'd’économies annuelles grâce à l’optimisation des licences SQL'],
       ['120 K€', 'd’économies Azure annuelles pour un compte stratégique'],
       ['−80 %', 'de temps consacré aux rapports de conformité'],
       ['−30 %', 'd’incidents de sécurité après couverture complète des ressources'],
@@ -382,7 +402,7 @@ const copy = {
   },
   ar: {
     nav: ['نبذة', 'الخبرة', 'المجتمع', 'المسيرة المهنية', 'الشهادات', 'التواصل'],
-    mainNav: 'التنقل الرئيسي', languageSelection: 'اختيار اللغة', cv: 'السيرة الذاتية PDF قريباً',
+    mainNav: 'التنقل الرئيسي', languageSelection: 'اختيار اللغة', cv: 'تنزيل السيرة الذاتية PDF',
     assistantTitle: 'مساعد التوظيف', assistantClose: 'إغلاق', assistantPrompt: 'اسأل عن مسيرتي أو خبرتي أو شهاداتي.',
     assistantPlaceholder: 'اكتب سؤالك…', assistantSend: 'إرسال', assistantAsk: 'اسأل',
     assistantReady: 'واجهة المساعد جاهزة، لكنها تحتاج إلى ربطها بخدمة آمنة قبل أن تتمكن من الإجابة.',
@@ -397,8 +417,17 @@ export default function App() {
   const [question, setQuestion] = useState('')
   const [assistantAnswer, setAssistantAnswer] = useState('')
   const [assistantBusy, setAssistantBusy] = useState(false)
+  const [linkCopied, setLinkCopied] = useState(false)
+  const [activeSection, setActiveSection] = useState('about')
   const t = { ...copy[language], ...content[language] }
-  const makeCv = () => language === 'ar' ? undefined : downloadCv(language, t).catch((error) => console.error('Unable to generate CV', error))
+  const makeCv = () => language === 'ar' ? printArabicCv(t) : downloadCv(language, t).catch((error) => console.error('Unable to generate CV', error))
+  const copyPortfolioLink = async () => {
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}`)
+      setLinkCopied(true)
+      window.setTimeout(() => setLinkCopied(false), 2200)
+    } catch (error) { console.error('Unable to copy portfolio link', error) }
+  }
   const askAssistant = async (event) => {
     event.preventDefault()
     const endpoint = import.meta.env.VITE_RECRUITER_ASSISTANT_ENDPOINT
@@ -423,18 +452,43 @@ export default function App() {
     document.title = ({ fr: 'Alaeddine Najjar — CTO de comptes et dirigeant technologique', es: 'Alaeddine Najjar — CTO de cuentas y líder tecnológico', ar: 'علاء الدين النّجار — مدير تقني وقيادي تكنولوجي' })[language] || 'Alaeddine Najjar — Accounts CTO & Technology Executive'
   }, [language])
 
+  useEffect(() => {
+    let frame = 0
+    const updateActiveSection = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        const marker = window.scrollY + window.innerHeight * 0.34
+        let current = 'about'
+        for (const id of sectionIds) {
+          const section = document.getElementById(id)
+          if (section && section.getBoundingClientRect().top + window.scrollY <= marker) current = id
+        }
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) current = 'contact'
+        setActiveSection((previous) => previous === current ? previous : current)
+      })
+    }
+    updateActiveSection()
+    window.addEventListener('scroll', updateActiveSection, { passive: true })
+    window.addEventListener('resize', updateActiveSection)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', updateActiveSection)
+      window.removeEventListener('resize', updateActiveSection)
+    }
+  }, [])
+
   return (
     <main className="site-shell" id="top">
       <header className="topbar">
         <a className="wordmark" href="#top" aria-label="Alaeddine Najjar, home">AN<span>.</span></a>
         <nav className="nav-links" aria-label={t.mainNav}>
-          {t.nav.map((label, index) => <a key={label} href={['#about', '#expertise', '#community', '#experience', '#credentials', '#contact'][index]}>{label}</a>)}
+          {t.nav.map((label, index) => <a key={label} className={activeSection === sectionIds[index] ? 'active' : ''} aria-current={activeSection === sectionIds[index] ? 'location' : undefined} href={`#${sectionIds[index]}`}>{label}</a>)}
         </nav>
         <div className="top-actions">
           <div className="language-switch" role="group" aria-label={t.languageSelection}>
             {['fr', 'en', 'es', 'ar'].map((code, index) => <span className="language-option" key={code}><button type="button" className={language === code ? 'active' : ''} aria-pressed={language === code} onClick={() => setLanguage(code)}>{code.toUpperCase()}</button>{index < 3 && <i>/</i>}</span>)}
           </div>
-          <button className="header-download" onClick={makeCv} disabled={language === 'ar'}>{t.cv} <span>↗</span></button>
+          <button className="header-download" onClick={makeCv}>{t.cv} <span>↗</span></button>
         </div>
       </header>
 
@@ -447,21 +501,25 @@ export default function App() {
           <p className="hero-intro">{t.intro}</p>
           <div className="hero-actions">
             <a className="button button-dark" href="#experience">{t.cta}<span>↗</span></a>
-            <button className="text-link" onClick={makeCv} disabled={language === 'ar'}>{t.cv}<span>↓</span></button>
+            <button className="text-link" onClick={makeCv}>{t.cv}<span>↓</span></button>
           </div>
           <p className="location"><span>⌖</span>{t.based}</p>
         </div>
         <aside className="hero-card" aria-label={t.focus}>
           <div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="orbit orbit-three" />
           <div className="card-monogram">AN</div>
-          <div className="hero-card-bottom"><span>{t.years}</span><p>{t.yearsLabel}</p><div className="card-rule" /><small>{t.focus}</small><p className="focus-copy">{t.focusText}</p></div>
+          <div className="profile-card-heading"><small>{t.focus}</small><h3>{t.cardTitle}</h3><p>{t.cardTagline}</p></div>
+          <div className="hero-card-bottom">
+            <div className="profile-card-years"><span>{t.years}</span><p>{t.yearsLabel}</p></div>
+            <div className="profile-card-stats">{[[t.cardMetricOneLabel, ...t.impacts[0]], [t.cardMetricTwoLabel, ...t.impacts[1]]].map(([label, metric, text]) => <div className="profile-card-stat" key={label}><strong>{label}</strong><span><b>{metric}</b>{text}</span></div>)}</div>
+          </div>
           <span className="card-star">✳</span>
         </aside>
       </section>
 
       <section className="impact-section section-wrap" aria-labelledby="impact-title">
         <div className="section-heading impact-heading"><p className="eyebrow">{t.impactLabel}</p><h2 id="impact-title">{t.impactTitle}</h2></div>
-        <div className="impact-grid">{t.impacts.map(([metric, text]) => <article className="impact-item" key={metric}><strong>{metric}</strong><p>{text}</p></article>)}</div>
+        <div className="impact-grid">{t.impacts.map(([metric, text]) => <article className="impact-item" key={metric}><strong>{metric === '950 k€' ? <bdi dir="ltr">{metric}</bdi> : metric}</strong><p>{text}</p></article>)}</div>
       </section>
 
       <section className="expertise-section section-wrap" id="expertise">
@@ -503,7 +561,19 @@ export default function App() {
         <div className="credentials-grid"><div className="cert-list">{t.certs.map((cert) => <div className="cert-item" key={cert}><BrandLogo {...certificationBrand(cert)} className="cert-brand-logo" />{cert}</div>)}</div><div className="detail-cards"><article><p className="eyebrow">{t.education}</p><p className="detail-copy">{t.educationText.split('\n').map((line) => <span key={line}>{line}</span>)}</p></article><article><p className="eyebrow">{t.languages}</p><p className="detail-copy">{t.languageText.split('\n').map((line) => <span key={line}>{line}</span>)}</p></article><article><p className="eyebrow">{t.recognition}</p><p className="detail-copy">{t.recognitionText}</p></article></div></div>
       </section>
 
-      <section className="closing-section section-wrap" id="contact"><p className="eyebrow">{t.closingEyebrow}</p><h2>{t.closingTitle}</h2><p>{t.closingText}</p><div className="closing-actions"><button className="button button-light" onClick={makeCv} disabled={language === 'ar'}>{t.cv}<span>↓</span></button><a className="closing-link" href={`mailto:${t.emailAddress}`}>{t.email}<span>↗</span></a><a className="closing-link" href="https://www.linkedin.com/in/alaeddinenajjar/" target="_blank" rel="noreferrer">{t.linkedin}<span>↗</span></a></div><div className="closing-decoration">✳</div></section>
+      <section className="closing-section section-wrap" id="contact">
+        <div className="closing-copy">
+          <p className="eyebrow">{t.closingEyebrow}</p><h2>{t.closingTitle}</h2><p>{t.closingText}</p>
+          <div className="closing-primary-actions"><a className="telegram-cta" href={t.telegramUrl} target="_blank" rel="noreferrer">{t.telegramLabel}<span>↗</span></a><a className="telegram-cta email-cta" href={`mailto:${t.emailAddress}`}>{t.emailCta}<span>↗</span></a></div>
+        </div>
+        <aside className="sharing-card" aria-label={t.shareTitle}>
+          <p className="sharing-eyebrow">{t.shareEyebrow}</p><h3>{t.shareTitle}</h3>
+          <a className="share-primary" href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${window.location.origin}${window.location.pathname}`)}`} target="_blank" rel="noreferrer"><span className="linkedin-mark">in</span>{t.shareLabel}<span className="share-arrow">↗</span></a>
+          <button className="copy-link" type="button" onClick={copyPortfolioLink}>{linkCopied ? t.copiedLabel : t.copyLinkLabel}<span>{linkCopied ? '✓' : '⧉'}</span></button>
+          <p className="share-helper">{t.shareHelper}</p>
+        </aside>
+        <div className="closing-decoration" aria-hidden="true">✳</div>
+      </section>
       <footer className="footer section-wrap"><span>{t.footer}</span><a href="#top">{t.backTop}</a></footer>
       <aside className="recruiter-assistant">
         {assistantOpen && <div className="assistant-panel"><div className="assistant-heading"><strong>{t.assistantTitle}</strong><button onClick={() => setAssistantOpen(false)} aria-label={t.assistantClose}>×</button></div><p>{t.assistantPrompt}</p><form onSubmit={askAssistant}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={t.assistantPlaceholder} required /><button disabled={assistantBusy}>{assistantBusy ? '…' : t.assistantSend}</button></form>{assistantAnswer && <p className="assistant-answer" role="status">{assistantAnswer}</p>}</div>}

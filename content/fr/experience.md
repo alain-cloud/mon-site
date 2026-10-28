@@ -7,7 +7,7 @@ detailsLabel: Voir les détails du rôle
 ## Fujitsu · France
 2023 — Aujourd’hui
 **CTO de comptes** (sept. 2024 — aujourd’hui); **chef d’équipe technique, architecte cloud AMCS** (sept. 2023 — août 2024)
-Axes actuels : FinOps, TOGAF, ITIL, Azure, AWS et Citrix.
+Axes actuels : FinOps, TOGAF, ITIL, Azure, AWS et Citrix. Conseil aux équipes lors des opportunités et propositions de services managés, contribuant à l’obtention de deux contrats Infrastructure et Workplace d’une valeur respective de plus de 7 M€ et de 15 M€, à l’élargissement des périmètres et à la prolongation des engagements.
 
 ## Desjardins · Montréal
 2016 · 2021 — 2023

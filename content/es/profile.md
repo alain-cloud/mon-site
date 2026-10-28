@@ -10,4 +10,8 @@ years: Más de 20 años
 yearsLabel: liderando tecnología
 focus: PERFIL DE LIDERAZGO
 focusText: Consultoría, asesoramiento empresarial y relación con clientes.
+cardTitle: Cloud, FinOps y transformación
+cardTagline: De las decisiones de arquitectura a los resultados de negocio.
+cardMetricOneLabel: FINOPS
+cardMetricTwoLabel: AZURE
 ---

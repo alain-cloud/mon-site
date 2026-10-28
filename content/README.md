@@ -7,7 +7,7 @@ Les contenus visibles sont dans `content/fr/`, `content/en/`, `content/es/` et `
 3. Enregistrer. Vite actualise le site local automatiquement.
 4. Pour mettre à jour le site public, reconstruire puis pousser les changements sur GitHub.
 
-Pour une expérience professionnelle, garder la structure d’un bloc : titre d’entreprise `##`, période sur la ligne suivante, poste(s) en gras sur la ligne d’après, puis description. Les mêmes fichiers alimentent le CV PDF généré dans le navigateur au clic sur « Télécharger le CV ». La génération PDF arabe est désactivée pour l’instant, car le générateur actuel ne prend pas en charge le façonnage des caractères arabes.
+Pour une expérience professionnelle, garder la structure d’un bloc : titre d’entreprise `##`, période sur la ligne suivante, poste(s) en gras sur la ligne d’après, puis description. Les mêmes fichiers alimentent le CV généré dans le navigateur au clic sur le bouton de téléchargement. Pour l’arabe, le CV s’ouvre dans une fenêtre d’impression afin que le navigateur compose correctement les caractères de droite à gauche; choisis « Enregistrer au format PDF » dans cette fenêtre.
 
 Dans `community.md`, modifier les valeurs de l’en-tête pour changer le texte, le lien de l’article Fujitsu ou les titres, identifiants et durées des vidéos YouTube intégrées.
 
@@ -15,7 +15,7 @@ Dans `fujitsu-projects.md`, chaque groupe de clients est anonymisé. Les entrée
 
 Dans `career-projects.md`, les expériences Desjardins, Cortex, Lumenpulse, CA Technologies et Sopra HR Software contiennent des projets détaillés issus du CV. Les noms des clients de Cortex sont remplacés par leur secteur d’activité.
 
-La version arabe utilise une mise en page de droite à gauche. Les noms officiels des certifications restent dans leur langue d’origine.
+La version arabe utilise une mise en page de droite à gauche. Les noms officiels des certifications restent dans leur langue d’origine. Le contact Telegram est paramétré dans les en-têtes de `content/*/contact.md`.
 
 Les logos d’entreprises et d’organismes de certification sont stockés localement dans `public/logos/`. Les marques disponibles proviennent du projet [Simple Icons](https://github.com/simple-icons/simple-icons). Quand un logo n’est pas disponible dans cette collection, le site affiche un monogramme avec les initiales de l’entreprise ou de l’organisme.
 

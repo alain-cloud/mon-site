@@ -24,4 +24,4 @@ Place the current files in `public/cv/` and keep these names so the download but
 
 ## GitHub Pages
 
-The Vite base path is configured as `/mon-site/` for the existing GitHub Pages repository. Change `base` in `vite.config.js` if the repository name changes.
+Vite uses relative asset paths so the site can work both at `alain-cloud.github.io/mon-site/` and on the custom domain `alaeddinenajjar.com`.

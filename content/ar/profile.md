@@ -10,4 +10,8 @@ years: أكثر من 20 عاماً
 yearsLabel: في قيادة التكنولوجيا
 focus: نبذة عن القيادة
 focusText: الاستشارات، وتوجيه الأعمال، والتواصل مع العملاء.
+cardTitle: السحابة وFinOps والتحول
+cardTagline: من خيارات الهندسة إلى نتائج الأعمال.
+cardMetricOneLabel: FINOPS
+cardMetricTwoLabel: AZURE
 ---

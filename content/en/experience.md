@@ -7,7 +7,7 @@ detailsLabel: View role details
 ## Fujitsu · France
 2023 — Present
 **Accounts CTO** (Sep 2024 — present); **Technical Team Lead, Cloud Architect AMCS** (Sep 2023 — Aug 2024)
-Current focus: FinOps, TOGAF, ITIL, Azure, AWS and Citrix.
+Current focus: FinOps, TOGAF, ITIL, Azure, AWS and Citrix. Advises account teams through managed-services opportunities and proposals, contributing to two Infrastructure and Workplace contract wins valued at over €7 million and €15 million respectively, plus scope expansions and term extensions.
 
 ## Desjardins · Montréal
 2016 · 2021 — 2023

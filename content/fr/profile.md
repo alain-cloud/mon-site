@@ -10,4 +10,8 @@ years: 20+ ans
 yearsLabel: en leadership technologique
 focus: PROFIL DE LEADERSHIP
 focusText: Conseil, accompagnement stratégique et engagement client.
+cardTitle: Cloud, FinOps et transformation
+cardTagline: Des choix d’architecture aux résultats d’affaires.
+cardMetricOneLabel: FINOPS
+cardMetricTwoLabel: AZURE
 ---

@@ -13,3 +13,6 @@ De temps consacré aux rapports de conformité.
 
 ## -30 %
 D’incidents de sécurité après couverture complète des ressources.
+
+## Croissance des services managés
+Accompagnement des équipes du cadrage des opportunités à la proposition et au suivi, contribuant à l’obtention de deux contrats de services managés Infrastructure et Workplace d’une valeur respective de plus de 7 M€ et de 15 M€, ainsi qu’à l’élargissement des périmètres et à la prolongation des engagements.
