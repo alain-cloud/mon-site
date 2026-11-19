@@ -1,38 +1,13 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import { parseProjectGroups, readMarkdown as parseMarkdown, sections } from './contentUtils.js'
 
 const mdFiles = import.meta.glob('../content/**/*.md', { query: '?raw', import: 'default', eager: true })
 const sectionIds = ['about', 'expertise', 'community', 'experience', 'credentials', 'contact']
 
 function readMarkdown(language, name) {
   const source = mdFiles[`../content/${language}/${name}.md`]
-  const [, frontmatter = '', body = ''] = source.match(/^---\s*\n([\s\S]*?)\n---\s*\n?([\s\S]*)$/) || []
-  const meta = Object.fromEntries(frontmatter.split('\n').filter(Boolean).map((line) => {
-    const split = line.indexOf(':')
-    return [line.slice(0, split), line.slice(split + 1).trim()]
-  }))
-  return { meta, body }
-}
-
-function sections(body) {
-  return body.split(/^##\s+/m).slice(1).map((section) => {
-    const [title, ...lines] = section.split('\n')
-    return { title: title.trim(), lines: lines.join('\n').trim() }
-  })
-}
-
-function parseProjectGroups(body) {
-  return body.split(/^##\s+/m).slice(1).map((group) => {
-    const [heading, ...projectSections] = group.split(/^###\s+/m)
-    const title = heading.split('\n')[0].trim()
-    const projects = projectSections.map((project) => {
-      const [projectTitle, ...rest] = project.split('\n')
-      const lines = rest.map((line) => line.trim()).filter(Boolean)
-      const role = (lines.shift() || '').replace(/^(Role|Rôle):\s*/, '')
-      return { title: projectTitle.trim(), role, description: lines.join(' ') }
-    })
-    return { title, projects }
-  })
+  return parseMarkdown(source, language, name)
 }
 
 function ProjectDetails({ groups, toggleLabel, roleLabel }) {
@@ -147,8 +122,7 @@ const content = {
 }
 
 async function downloadCv(language, data) {
-  const { PDFDocument, StandardFonts, rgb } = window.PDFLib || {}
-  if (!PDFDocument) throw new Error('PDF generator is unavailable')
+  const { PDFDocument, StandardFonts, rgb } = await import('pdf-lib')
   const pdf = await PDFDocument.create()
   const regular = await pdf.embedFont(StandardFonts.Helvetica)
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold)
@@ -253,6 +227,7 @@ function printArabicCv(data) {
 const copy = {
   en: {
     nav: ['About', 'Expertise', 'Community', 'Experience', 'Credentials', 'Contact'],
+    blogLabel: 'Blog',
     mainNav: 'Main navigation',
     languageSelection: 'Language selection',
     assistantTitle: 'Recruiter assistant', assistantClose: 'Close', assistantPrompt: 'Ask about my experience, skills or certifications.',
@@ -274,7 +249,7 @@ const copy = {
     impactTitle: 'Architecture that moves the numbers.',
     impacts: [
       ['950 k€', 'annual savings through SQL licensing optimization'],
-      ['€120K', 'annual Azure savings for a strategic account'],
+      ['120K€', 'annual Azure savings for a strategic account'],
       ['−80%', 'time spent preparing compliance reports'],
       ['−30%', 'security incidents after full resource coverage'],
     ],
@@ -323,6 +298,7 @@ const copy = {
   },
   fr: {
     nav: ['Profil', 'Expertise', 'Communauté', 'Expérience', 'Certifications', 'Contact'],
+    blogLabel: 'Blog',
     mainNav: 'Navigation principale',
     languageSelection: 'Choix de la langue',
     assistantTitle: 'Assistant recruteur', assistantClose: 'Fermer', assistantPrompt: 'Posez une question sur mon parcours, mes compétences ou mes certifications.',
@@ -393,6 +369,7 @@ const copy = {
   },
   es: {
     nav: ['Perfil', 'Especialidad', 'Comunidad', 'Experiencia', 'Certificaciones', 'Contacto'],
+    blogLabel: 'Blog',
     mainNav: 'Navegación principal', languageSelection: 'Selección de idioma', cv: 'Descargar CV',
     assistantTitle: 'Asistente para selección', assistantClose: 'Cerrar', assistantPrompt: 'Pregunta sobre mi trayectoria, experiencia o certificaciones.',
     assistantPlaceholder: 'Tu pregunta…', assistantSend: 'Enviar', assistantAsk: 'Preguntar',
@@ -402,6 +379,7 @@ const copy = {
   },
   ar: {
     nav: ['نبذة', 'الخبرة', 'المجتمع', 'المسيرة المهنية', 'الشهادات', 'التواصل'],
+    blogLabel: 'مدونة',
     mainNav: 'التنقل الرئيسي', languageSelection: 'اختيار اللغة', cv: 'تنزيل السيرة الذاتية PDF',
     assistantTitle: 'مساعد التوظيف', assistantClose: 'إغلاق', assistantPrompt: 'اسأل عن مسيرتي أو خبرتي أو شهاداتي.',
     assistantPlaceholder: 'اكتب سؤالك…', assistantSend: 'إرسال', assistantAsk: 'اسأل',
@@ -440,7 +418,8 @@ export default function App() {
       const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ language, question, profile: t }) })
       if (!response.ok) throw new Error('Assistant request failed')
       const result = await response.json()
-      setAssistantAnswer(result.answer || '')
+      const answer = typeof result.answer === 'string' ? result.answer.slice(0, 2000) : ''
+      setAssistantAnswer(answer)
     } catch {
       setAssistantAnswer(t.assistantUnavailable)
     } finally { setAssistantBusy(false) }
@@ -483,6 +462,7 @@ export default function App() {
         <a className="wordmark" href="#top" aria-label="Alaeddine Najjar, home">AN<span>.</span></a>
         <nav className="nav-links" aria-label={t.mainNav}>
           {t.nav.map((label, index) => <a key={label} className={activeSection === sectionIds[index] ? 'active' : ''} aria-current={activeSection === sectionIds[index] ? 'location' : undefined} href={`#${sectionIds[index]}`}>{label}</a>)}
+          <a href="https://blog.alaeddinenajjar.com" rel="noopener noreferrer">{t.blogLabel}</a>
         </nav>
         <div className="top-actions">
           <div className="language-switch" role="group" aria-label={t.languageSelection}>
@@ -519,7 +499,7 @@ export default function App() {
 
       <section className="impact-section section-wrap" aria-labelledby="impact-title">
         <div className="section-heading impact-heading"><p className="eyebrow">{t.impactLabel}</p><h2 id="impact-title">{t.impactTitle}</h2></div>
-        <div className="impact-grid">{t.impacts.map(([metric, text]) => <article className="impact-item" key={metric}><strong>{metric === '950 k€' ? <bdi dir="ltr">{metric}</bdi> : metric}</strong><p>{text}</p></article>)}</div>
+        <div className="impact-grid">{t.impacts.map(([metric, text], index) => <article className={`impact-item${index === t.impacts.length - 1 ? ' impact-item-featured' : ''}`} key={metric}><strong>{metric === '950 k€' ? <bdi dir="ltr">{metric}</bdi> : metric}</strong><p>{text}</p></article>)}</div>
       </section>
 
       <section className="expertise-section section-wrap" id="expertise">
@@ -576,8 +556,8 @@ export default function App() {
       </section>
       <footer className="footer section-wrap"><span>{t.footer}</span><a href="#top">{t.backTop}</a></footer>
       <aside className="recruiter-assistant">
-        {assistantOpen && <div className="assistant-panel"><div className="assistant-heading"><strong>{t.assistantTitle}</strong><button onClick={() => setAssistantOpen(false)} aria-label={t.assistantClose}>×</button></div><p>{t.assistantPrompt}</p><form onSubmit={askAssistant}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={t.assistantPlaceholder} required /><button disabled={assistantBusy}>{assistantBusy ? '…' : t.assistantSend}</button></form>{assistantAnswer && <p className="assistant-answer" role="status">{assistantAnswer}</p>}</div>}
-        <button className="assistant-launcher" onClick={() => setAssistantOpen(!assistantOpen)}>{t.assistantLauncher}</button>
+        {assistantOpen && <div className="assistant-panel" role="dialog" aria-modal="false" aria-labelledby="assistant-title"><div className="assistant-heading"><strong id="assistant-title">{t.assistantTitle}</strong><button type="button" onClick={() => setAssistantOpen(false)} aria-label={t.assistantClose}>×</button></div><p>{t.assistantPrompt}</p><form onSubmit={askAssistant}><input value={question} onChange={(event) => setQuestion(event.target.value)} placeholder={t.assistantPlaceholder} required maxLength={500} /><button type="submit" disabled={assistantBusy}>{assistantBusy ? '…' : t.assistantSend}</button></form>{assistantAnswer && <p className="assistant-answer" role="status">{assistantAnswer}</p>}</div>}
+        <button type="button" className="assistant-launcher" aria-expanded={assistantOpen} onClick={() => setAssistantOpen(!assistantOpen)}>{t.assistantLauncher}</button>
       </aside>
     </main>
   )

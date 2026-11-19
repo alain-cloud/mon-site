@@ -76,6 +76,9 @@ button { font: inherit; }
 .impact-item { padding-inline-start: 16px; border-inline-start: 1px solid #cfdae5; }
 .impact-item strong { display: block; font: 600 27px 'Manrope', sans-serif; letter-spacing: -1.2px; color: #2f70b7; }
 .impact-item p { margin: 5px 0 0; max-width: 210px; color: #5e6f85; font-size: 10px; line-height: 1.6; }
+.impact-item-featured { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); align-items: center; gap: 18px; padding: 18px 20px; border: 1px solid #d8e2ed; border-inline-start: 3px solid #3479bd; background: #e9f0f8; }
+.impact-item-featured strong { font-size: 24px; }
+.impact-item-featured p { max-width: 720px; margin: 0; font-size: 12px; }
 .expertise-section { display: grid; grid-template-columns: .7fr 1.3fr; gap: 60px; padding-block: 105px 110px; }
 .section-intro { max-width: 330px; margin-top: 17px; color: #718198; font-size: 12px; line-height: 1.75; }
 .expertise-list { border-top: 1px solid #d8e2ed; }
@@ -195,6 +198,13 @@ button { font: inherit; }
 [dir="rtl"] .card-star { right: 17px; left: auto; }
 [dir="rtl"] .recruiter-assistant { right: auto; left: 24px; }
 [dir="rtl"] .community-article { border-left: 1px solid #d8e2ed; border-right: 3px solid #3479bd; }
+@media (max-width: 1000px) {
+  .topbar { height: auto; min-height: 72px; display: grid; grid-template-columns: minmax(0, 1fr) auto; padding-top: 12px; }
+  .wordmark { grid-column: 1; grid-row: 1; }
+  .top-actions { grid-column: 2; grid-row: 1; }
+  .nav-links { grid-column: 1 / -1; grid-row: 2; min-width: 0; gap: 24px; margin: 8px 0 0; padding: 0 0 10px; overflow-x: auto; scrollbar-width: none; }
+  .nav-links::-webkit-scrollbar { display: none; }
+}
 @media (max-width: 800px) {
   .section-wrap, .topbar { width: min(100% - 44px, 650px); }
   .topbar { height: auto; min-height: 72px; display: grid; grid-template-columns: minmax(0, 1fr) auto; padding-top: 12px; }
@@ -240,6 +250,9 @@ button { font: inherit; }
   .impact-section { padding-block: 34px 44px; }
   .impact-grid { gap: 23px 14px; }
   .impact-item { padding-inline-start: 11px; }
+  .impact-item-featured { padding: 15px; }
+  .impact-item-featured strong { font-size: 20px; }
+  .impact-item-featured p { font-size: 10px; }
   .impact-item strong { font-size: 23px; }
   .impact-item p { font-size: 9px; }
   .expertise-row { grid-template-columns: 24px 1fr 14px; gap: 12px; }

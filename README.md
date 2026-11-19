@@ -1,6 +1,6 @@
 # Alaeddine Najjar - Portfolio
 
-Bilingual portfolio in French and English, built with React and Vite. The language switch updates the page copy and selects the matching CV PDF.
+Multilingual portfolio in English, French, Spanish, and Arabic, built with React and Vite. The language switch updates the page copy and generates a matching CV; Arabic uses the browser's print-to-PDF flow.
 
 ## Run locally
 
@@ -8,6 +8,8 @@ Bilingual portfolio in French and English, built with React and Vite. The langua
 npm install
 npm run dev
 ```
+
+Use Node.js 22.12 or newer.
 
 ## Build
 
@@ -17,10 +19,7 @@ npm run build
 
 ## CV downloads
 
-Place the current files in `public/cv/` and keep these names so the download buttons continue to work:
-
-- `Alaeddine-Najjar-CV-EN.pdf`
-- `Alaeddine-Najjar-CV-FR.pdf`
+The English, French, and Spanish CVs are generated in the browser from the localized portfolio content. The Arabic CV opens a print-ready page so the browser can render Arabic text correctly; choose **Save as PDF** in the print dialog.
 
 ## GitHub Pages
 
