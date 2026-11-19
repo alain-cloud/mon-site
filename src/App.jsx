@@ -3,7 +3,65 @@ import './App.css'
 import { parseProjectGroups, readMarkdown as parseMarkdown, sections } from './contentUtils.js'
 
 const mdFiles = import.meta.glob('../content/**/*.md', { query: '?raw', import: 'default', eager: true })
-const sectionIds = ['about', 'expertise', 'community', 'experience', 'credentials', 'contact']
+const sectionIds = ['about', 'expertise', 'architecture', 'community', 'experience', 'credentials', 'contact']
+
+const featuredWork = [
+  {
+    title: 'Building an Azure Landing Zone with Terraform',
+    description: {
+      en: 'A governed Azure platform blueprint covering management groups, policy, federated CI identity, remote state, and safe promotion. The linked Terraform is an audit-only learning sample, not a complete landing zone.',
+      fr: 'Une architecture de plateforme Azure gouvernée : groupes de gestion, stratégies, identité fédérée pour la CI, état distant et promotion contrôlée. Le Terraform lié est un exemple pédagogique en mode audit, pas une landing zone complète.',
+      es: 'Una arquitectura de plataforma Azure gobernada: grupos de administración, directivas, identidad federada para CI, estado remoto y promoción segura. El Terraform enlazado es una muestra educativa de auditoría, no una landing zone completa.',
+      ar: 'مرجع لمنصة Azure محكومة يشمل مجموعات الإدارة والسياسات وهوية CI الاتحادية والحالة البعيدة والترقية الآمنة. مثال Terraform المرتبط تعليمي للتدقيق فقط وليس منطقة هبوط كاملة.',
+    },
+    article: 'https://blog.alaeddinenajjar.com/architecture/azure/2026/11/19/building-azure-landing-zone-terraform/',
+    example: 'https://github.com/alain-cloud/blog/tree/main/examples/terraform-landing-zone',
+  },
+  {
+    title: 'Azure FinOps: Finding and Removing Wasted Resources',
+    description: {
+      en: 'An evidence-first process to find idle resources, verify owners, prioritize reversible cleanup, and measure outcomes with Azure inventory and cost data.',
+      fr: 'Une démarche fondée sur les preuves pour repérer les ressources inutilisées, valider leurs propriétaires, prioriser un nettoyage réversible et mesurer les résultats.',
+      es: 'Un proceso basado en evidencias para detectar recursos inactivos, confirmar responsables, priorizar una limpieza reversible y medir los resultados.',
+      ar: 'منهج قائم على الأدلة لاكتشاف الموارد الخاملة والتحقق من مالكيها وترتيب عمليات تنظيف قابلة للتراجع وقياس النتائج.',
+    },
+    article: 'https://blog.alaeddinenajjar.com/finops/azure/2026/11/19/azure-finops-find-remove-wasted-resources/',
+    example: 'https://github.com/alain-cloud/blog/tree/main/examples/finops-waste',
+  },
+  {
+    title: 'Designing Enterprise Disaster Recovery on Azure',
+    description: {
+      en: 'A service-oriented recovery design tying RTO and RPO to dependencies, identity, network, data protection, operations, and tested failback.',
+      fr: 'Une stratégie de reprise orientée services, reliant RTO et RPO aux dépendances, à l’identité, au réseau, à la protection des données, aux opérations et au retour testé.',
+      es: 'Un diseño de recuperación orientado a servicios que relaciona RTO y RPO con dependencias, identidad, red, protección de datos, operaciones y retorno probado.',
+      ar: 'تصميم للتعافي يربط أهداف RTO وRPO بالتبعيات والهوية والشبكة وحماية البيانات والعمليات واختبار العودة.',
+    },
+    article: 'https://blog.alaeddinenajjar.com/reliability/azure/2026/11/19/designing-enterprise-disaster-recovery-azure/',
+    example: 'https://github.com/alain-cloud/blog/tree/main/examples/enterprise-disaster-recovery',
+  },
+  {
+    title: 'Zero Trust Architecture: From VPN to ZTNA',
+    description: {
+      en: 'A gradual migration pattern from broad VPN trust to application-specific access based on identity, device posture, segmentation, telemetry, and rollback.',
+      fr: 'Un parcours de migration progressif du VPN à large périmètre vers des accès par application fondés sur l’identité, la posture des appareils, la segmentation, la télémétrie et le retour arrière.',
+      es: 'Una migración gradual desde la confianza amplia de VPN hacia accesos por aplicación basados en identidad, estado del dispositivo, segmentación, telemetría y reversión.',
+      ar: 'مسار تدريجي للانتقال من الثقة الواسعة عبر VPN إلى وصول خاص بالتطبيقات يعتمد على الهوية وحالة الجهاز والتقسيم والقياس وإمكانية التراجع.',
+    },
+    article: 'https://blog.alaeddinenajjar.com/security/identity/2026/11/19/zero-trust-from-vpn-to-ztna/',
+    example: 'https://github.com/alain-cloud/blog/tree/main/examples/zero-trust-ztna',
+  },
+  {
+    title: 'My AI-Assisted Cloud Engineering Workflow',
+    description: {
+      en: 'A human-governed workflow for AI-assisted cloud engineering with explicit context boundaries, secret protection, code review, and executable validation.',
+      fr: 'Un flux de travail encadré par l’humain pour l’ingénierie cloud assistée par IA : contexte maîtrisé, protection des secrets, revue du code et validations exécutables.',
+      es: 'Un flujo de ingeniería cloud asistido por IA y supervisado por personas: contexto delimitado, protección de secretos, revisión de código y validaciones ejecutables.',
+      ar: 'سير عمل لهندسة السحابة بمساعدة الذكاء الاصطناعي وتحت إشراف بشري، مع ضبط السياق وحماية الأسرار ومراجعة الشيفرة والتحقق القابل للتنفيذ.',
+    },
+    article: 'https://blog.alaeddinenajjar.com/engineering/cloud/2026/11/19/my-ai-assisted-cloud-engineering-workflow/',
+    example: 'https://github.com/alain-cloud/blog/tree/main/examples/ai-cloud-engineering',
+  },
+]
 
 function readMarkdown(language, name) {
   const source = mdFiles[`../content/${language}/${name}.md`]
@@ -226,8 +284,16 @@ function printArabicCv(data) {
 
 const copy = {
   en: {
-    nav: ['About', 'Expertise', 'Community', 'Experience', 'Credentials', 'Contact'],
+    nav: ['About', 'Expertise', 'Architecture', 'Community', 'Experience', 'Credentials', 'Contact'],
+    skipToContent: 'Skip to content',
     blogLabel: 'Blog',
+    workEyebrow: 'REFERENCE ARCHITECTURES & TECHNICAL DEMONSTRATIONS',
+    workTitle: 'Architecture decisions, made practical.',
+    workIntro: 'Five technical walkthroughs with implementation notes and companion examples. These are reference architectures and demonstrations, not claims of client delivery.',
+    workType: 'REFERENCE ARCHITECTURE · TECHNICAL DEMO',
+    workArticleLabel: 'Read the article',
+    workExampleLabel: 'Open GitHub example',
+    workAdrLabel: 'Explore the architecture decision records',
     mainNav: 'Main navigation',
     languageSelection: 'Language selection',
     assistantTitle: 'Recruiter assistant', assistantClose: 'Close', assistantPrompt: 'Ask about my experience, skills or certifications.',
@@ -297,8 +363,16 @@ const copy = {
     pdfLang: 'EN',
   },
   fr: {
-    nav: ['Profil', 'Expertise', 'Communauté', 'Expérience', 'Certifications', 'Contact'],
+    nav: ['Profil', 'Expertise', 'Architecture', 'Communauté', 'Expérience', 'Certifications', 'Contact'],
+    skipToContent: 'Aller au contenu',
     blogLabel: 'Blog',
+    workEyebrow: 'ARCHITECTURES DE RÉFÉRENCE ET DÉMONSTRATIONS',
+    workTitle: 'Des décisions d’architecture concrètes.',
+    workIntro: 'Cinq parcours techniques avec des indications de mise en œuvre et des exemples associés. Ce sont des architectures de référence et des démonstrations, pas des réalisations client revendiquées.',
+    workType: 'ARCHITECTURE DE RÉFÉRENCE · DÉMO TECHNIQUE',
+    workArticleLabel: 'Lire l’article',
+    workExampleLabel: 'Voir l’exemple GitHub',
+    workAdrLabel: 'Consulter les décisions d’architecture',
     mainNav: 'Navigation principale',
     languageSelection: 'Choix de la langue',
     assistantTitle: 'Assistant recruteur', assistantClose: 'Fermer', assistantPrompt: 'Posez une question sur mon parcours, mes compétences ou mes certifications.',
@@ -368,8 +442,16 @@ const copy = {
     pdfLang: 'FR',
   },
   es: {
-    nav: ['Perfil', 'Especialidad', 'Comunidad', 'Experiencia', 'Certificaciones', 'Contacto'],
+    nav: ['Perfil', 'Especialidad', 'Arquitectura', 'Comunidad', 'Experiencia', 'Certificaciones', 'Contacto'],
+    skipToContent: 'Saltar al contenido',
     blogLabel: 'Blog',
+    workEyebrow: 'ARQUITECTURAS DE REFERENCIA Y DEMOSTRACIONES',
+    workTitle: 'Decisiones de arquitectura aplicadas.',
+    workIntro: 'Cinco recorridos técnicos con notas de implementación y ejemplos complementarios. Son arquitecturas de referencia y demostraciones, no proyectos de clientes presentados como realizados.',
+    workType: 'ARQUITECTURA DE REFERENCIA · DEMOSTRACIÓN',
+    workArticleLabel: 'Leer el artículo',
+    workExampleLabel: 'Ver ejemplo en GitHub',
+    workAdrLabel: 'Consultar las decisiones de arquitectura',
     mainNav: 'Navegación principal', languageSelection: 'Selección de idioma', cv: 'Descargar CV',
     assistantTitle: 'Asistente para selección', assistantClose: 'Cerrar', assistantPrompt: 'Pregunta sobre mi trayectoria, experiencia o certificaciones.',
     assistantPlaceholder: 'Tu pregunta…', assistantSend: 'Enviar', assistantAsk: 'Preguntar',
@@ -378,8 +460,16 @@ const copy = {
     pdfLang: 'ES',
   },
   ar: {
-    nav: ['نبذة', 'الخبرة', 'المجتمع', 'المسيرة المهنية', 'الشهادات', 'التواصل'],
+    nav: ['نبذة', 'الخبرة', 'الهندسة المعمارية', 'المجتمع', 'المسيرة المهنية', 'الشهادات', 'التواصل'],
+    skipToContent: 'تجاوز إلى المحتوى',
     blogLabel: 'مدونة',
+    workEyebrow: 'مراجع معمارية وعروض تقنية',
+    workTitle: 'قرارات معمارية قابلة للتطبيق.',
+    workIntro: 'خمسة شروحات تقنية تتضمن ملاحظات تنفيذية وأمثلة مرافقة. هذه مراجع معمارية وعروض تقنية وليست ادعاءات بتنفيذ مشاريع لعملاء.',
+    workType: 'مرجع معماري · عرض تقني',
+    workArticleLabel: 'اقرأ المقال',
+    workExampleLabel: 'افتح مثال GitHub',
+    workAdrLabel: 'استكشف سجلات القرارات المعمارية',
     mainNav: 'التنقل الرئيسي', languageSelection: 'اختيار اللغة', cv: 'تنزيل السيرة الذاتية PDF',
     assistantTitle: 'مساعد التوظيف', assistantClose: 'إغلاق', assistantPrompt: 'اسأل عن مسيرتي أو خبرتي أو شهاداتي.',
     assistantPlaceholder: 'اكتب سؤالك…', assistantSend: 'إرسال', assistantAsk: 'اسأل',
@@ -428,7 +518,7 @@ export default function App() {
   useEffect(() => {
     document.documentElement.lang = language
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr'
-    document.title = ({ fr: 'Alaeddine Najjar — CTO de comptes et dirigeant technologique', es: 'Alaeddine Najjar — CTO de cuentas y líder tecnológico', ar: 'علاء الدين النّجار — مدير تقني وقيادي تكنولوجي' })[language] || 'Alaeddine Najjar — Accounts CTO & Technology Executive'
+    document.title = ({ fr: 'Alaeddine Najjar — CTO de comptes et architecte cloud', es: 'Alaeddine Najjar — CTO de cuentas y arquitecto cloud', ar: 'علاء الدين النّجار — مدير تقني ومهندس سحابي' })[language] || 'Alaeddine Najjar — Accounts CTO & Cloud Architect'
   }, [language])
 
   useEffect(() => {
@@ -458,6 +548,7 @@ export default function App() {
 
   return (
     <main className="site-shell" id="top">
+      <a className="skip-link" href="#about">{t.skipToContent}</a>
       <header className="topbar">
         <a className="wordmark" href="#top" aria-label="Alaeddine Najjar, home">AN<span>.</span></a>
         <nav className="nav-links" aria-label={t.mainNav}>
@@ -505,6 +596,20 @@ export default function App() {
       <section className="expertise-section section-wrap" id="expertise">
         <div className="section-heading"><p className="eyebrow">{t.expertiseEyebrow}</p><h2>{t.expertiseTitle}</h2><p className="section-intro">{t.expertiseIntro}</p></div>
         <div className="expertise-list">{t.expertise.map(([number, title, text]) => <article className="expertise-row" key={number}><span className="row-number">{number}</span><h3>{title}</h3><p>{text}</p><span className="row-arrow">↗</span></article>)}</div>
+      </section>
+
+      <section className="work-section section-wrap" id="architecture" aria-labelledby="work-title">
+        <div className="section-heading"><p className="eyebrow">{t.workEyebrow}</p><h2 id="work-title">{t.workTitle}</h2><p className="section-intro">{t.workIntro}</p></div>
+        <div className="work-grid">{featuredWork.map((item) => <article className="work-card" key={item.article}>
+          <p className="work-type">{t.workType}</p>
+          <h3><a href={item.article} target="_blank" rel="noopener noreferrer">{item.title}</a></h3>
+          <p className="work-description">{item.description[language]}</p>
+          <div className="work-links">
+            <a href={item.article} target="_blank" rel="noopener noreferrer">{t.workArticleLabel}<span aria-hidden="true">↗</span></a>
+            <a href={item.example} target="_blank" rel="noopener noreferrer">{t.workExampleLabel}<span aria-hidden="true">↗</span></a>
+          </div>
+        </article>)}</div>
+        <p className="work-records-link"><a href="https://blog.alaeddinenajjar.com/architecture-decisions/" target="_blank" rel="noopener noreferrer">{t.workAdrLabel}<span aria-hidden="true">↗</span></a></p>
       </section>
 
       <section className="community-section section-wrap" id="community">

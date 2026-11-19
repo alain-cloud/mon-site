@@ -8,6 +8,8 @@ a { color: inherit; }
 button { font: inherit; }
 .site-shell { overflow-x: clip; background: #f4f7fb; }
 .section-wrap { width: min(1120px, calc(100% - 72px)); margin-inline: auto; }
+.skip-link { position: absolute; z-index: 60; top: 8px; inset-inline-start: 8px; padding: 10px 14px; transform: translateY(-150%); border-radius: 6px; background: #17263b; color: #fff; font-size: 13px; font-weight: 700; text-decoration: none; }
+.skip-link:focus { transform: translateY(0); }
 .topbar { position: sticky; top: 0; z-index: 30; width: min(1280px, calc(100% - 72px)); height: 88px; margin: auto; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #d8e2ed; background: #f4f7fbf2; backdrop-filter: blur(14px); }
 .wordmark { font: 800 23px/1 'Manrope', sans-serif; text-decoration: none; letter-spacing: -1.5px; }
 .wordmark span { color: #78b8f6; }
@@ -87,6 +89,20 @@ button { font: inherit; }
 .expertise-row h3 { font-size: 12px; line-height: 1.5; margin: 0; font-weight: 700; }
 .expertise-row p { font-size: 10px; line-height: 1.7; color: #6b7c92; margin: 0; }
 .row-arrow { color: #508ac9; font-size: 15px; }
+.work-section { padding-block: 92px 100px; border-top: 1px solid #d8e2ed; }
+.work-section > .section-heading { max-width: 650px; margin-bottom: 30px; }
+.work-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.work-card { min-width: 0; display: flex; flex-direction: column; padding: 24px; border: 1px solid #d8e2ed; border-radius: 12px; background: #fff; }
+.work-type { margin: 0 0 12px; color: #5481ad; font-size: 9px; font-weight: 700; letter-spacing: 1px; }
+.work-card h3 { margin: 0; color: #17263b; font: 600 19px/1.35 'Manrope', sans-serif; }
+.work-card h3 a { text-decoration: none; }
+.work-card h3 a:hover, .work-links a:hover { color: #276caf; text-decoration: underline; text-underline-offset: 3px; }
+.work-description { flex: 1; margin: 12px 0 20px; color: #5e6f85; font-size: 12px; line-height: 1.7; }
+.work-links { display: flex; flex-wrap: wrap; gap: 10px 20px; padding-top: 13px; border-top: 1px solid #e3eaf1; }
+.work-links a { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; color: #276caf; font-size: 11px; font-weight: 700; text-decoration: none; }
+.work-records-link { margin: 22px 0 0; font-size: 12px; font-weight: 700; }
+.work-records-link a { display: inline-flex; gap: 7px; align-items: center; color: #276caf; text-decoration: none; }
+.work-records-link a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .community-section { padding-block: 100px 108px; }
 .community-section > .section-heading { max-width: 600px; margin-bottom: 32px; }
 .community-article { display: block; padding: 27px 30px; border: 1px solid #d8e2ed; border-left: 3px solid #3479bd; background: #fff; color: inherit; text-decoration: none; transition: border-color .2s, transform .2s, box-shadow .2s; }
@@ -217,6 +233,7 @@ button { font: inherit; }
   .closing-section { grid-template-columns: 1fr; gap: 30px; }
   .sharing-card { width: min(100%, 500px); }
   .impact-section, .expertise-section, .experience-inner { grid-template-columns: 1fr; gap: 35px; }
+  .work-section { padding-block: 75px; }
   .impact-heading h2 { max-width: 480px; }
   .expertise-section, .experience-inner { padding-block: 75px; }
   .community-section { padding-block: 75px; }
@@ -258,6 +275,8 @@ button { font: inherit; }
   .expertise-row { grid-template-columns: 24px 1fr 14px; gap: 12px; }
   .expertise-row p { grid-column: 2 / 3; }
   .community-video-grid { grid-template-columns: 1fr; }
+  .work-grid { grid-template-columns: 1fr; }
+  .work-card { padding: 21px 19px; }
   .community-article { padding: 22px 19px; }
   .community-article h3 { font-size: 18px; }
   .row-arrow { grid-column: 3; grid-row: 1; }
@@ -269,6 +288,7 @@ button { font: inherit; }
   .sharing-card { padding: 20px 18px 16px; }
   .closing-decoration { right: -60px; top: -51px; font-size: 240px; }
   .footer { gap: 20px; align-items: flex-start; line-height: 1.6; }
+  .recruiter-assistant { position: static; display: flex; flex-direction: column; align-items: flex-end; width: calc(100% - 36px); margin: 0 auto 18px; }
 }
 @keyframes orbit-one { from { transform: rotate(-28deg) scaleY(.43); } to { transform: rotate(332deg) scaleY(.43); } }
 @keyframes orbit-two { from { transform: rotate(33deg) scaleY(.44); } to { transform: rotate(-327deg) scaleY(.44); } }
